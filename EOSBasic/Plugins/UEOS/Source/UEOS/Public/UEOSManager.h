@@ -4,11 +4,10 @@
 
 // Engine Includes
 #include "Object.h"
-#include "WeakObjectPtr.h"
-#include "UObject/TextProperty.h"
 
 // EOS Includes
 #include "eos_sdk.h"
+#include "eos_logging.h"
 
 #include "UEOSManager.generated.h"
 
@@ -61,4 +60,13 @@ protected:
 	// --------------------------------------------------------------
 
 	EOS_HPlatform								PlatformHandle;
+
+private:
+
+	/**
+	* Callback function to use for EOS SDK log messages
+	*
+	* @param InMsg - A structure representing data for a log message
+	*/
+	static void									EOSSDKLoggingCallback( const EOS_LogMessage* InMsg );
 };

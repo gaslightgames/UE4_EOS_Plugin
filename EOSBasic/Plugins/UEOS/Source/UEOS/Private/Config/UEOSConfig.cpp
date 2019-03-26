@@ -10,6 +10,7 @@ UEOSConfig::UEOSConfig()
 	, ClientSecret( "" )
 	, bIsServer( false )
 	, bAllowReservedPlatforms( false )
+	, LogLevel( ELogLevel::LL_VeryVerbose )
 {
 
 }
@@ -68,4 +69,10 @@ void UEOSConfig::SetAllowReservedPlatforms( bool bAllow )
 		bAllowReservedPlatforms = bAllow;
 		SaveConfig();
 	}
+}
+
+void UEOSConfig::SetLogLevel( ELogLevel NewLogLevel )
+{
+	LogLevel = NewLogLevel;
+	SaveConfig();
 }

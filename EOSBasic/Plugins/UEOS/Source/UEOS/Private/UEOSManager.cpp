@@ -110,6 +110,55 @@ bool UEOSManager::InitEOS()
 	MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Platform Create - Success!" ) );
 	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
 
+	MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Setting Logging Callback..." ) );
+	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+
+	EOS_EResult SetLogCallbackResult = EOS_Logging_SetCallback( &EOSSDKLoggingCallback );
+	if( SetLogCallbackResult != EOS_EResult::EOS_Success )
+	{
+		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Set Logging Callback Failed!" ) );
+		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+
+		return false;
+	}
+
+	MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging Callback Set." ) );
+	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+
+	EOS_ELogLevel EOSLogLevel = EOS_ELogLevel::EOS_LOG_VeryVerbose;
+	if( EOSConfig != nullptr )
+	{
+		switch( EOSConfig->LogLevel )
+		{
+			case ELogLevel::LL_Off:
+				EOSLogLevel = EOS_ELogLevel::EOS_LOG_Off;
+				break;
+			case ELogLevel::LL_Fatal:
+				EOSLogLevel = EOS_ELogLevel::EOS_LOG_Fatal;
+				break;
+			case ELogLevel::LL_Error:
+				EOSLogLevel = EOS_ELogLevel::EOS_LOG_Error;
+				break;
+			case ELogLevel::LL_Warning:
+				EOSLogLevel = EOS_ELogLevel::EOS_LOG_Warning;
+				break;
+			case ELogLevel::LL_Info:
+				EOSLogLevel = EOS_ELogLevel::EOS_LOG_Info;
+				break;
+			case ELogLevel::LL_Verbose:
+				EOSLogLevel = EOS_ELogLevel::EOS_LOG_Verbose;
+				break;
+			case ELogLevel::LL_VeryVerbose:
+				EOSLogLevel = EOS_ELogLevel::EOS_LOG_VeryVerbose;
+				break;
+			default:
+				EOSLogLevel = EOS_ELogLevel::EOS_LOG_Off;
+				break;
+		}
+	}
+
+	EOS_Logging_SetLogLevel( EOS_ELogCategory::EOS_LC_ALL_CATEGORIES, EOSLogLevel );
+
 	return true;
 }
 
@@ -137,4 +186,10 @@ bool UEOSManager::ShutdownEOS()
 	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
 
 	return bShutdownSuccess;
+}
+
+void UEOSManager::EOSSDKLoggingCallback( const EOS_LogMessage* InMsg )
+{
+	FString Message( InMsg->Message );
+	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *Message );
 }
