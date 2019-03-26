@@ -1,0 +1,1 @@
+Add the Bin, Include and Lib folders from the SDK to this folder.
