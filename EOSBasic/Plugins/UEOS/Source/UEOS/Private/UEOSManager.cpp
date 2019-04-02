@@ -4,6 +4,7 @@
 
 #include "Config/UEOSConfig.h"
 #include "Authentication/Authentication.h"
+#include "Metrics/Metrics.h"
 
 #include "UEOSModule.h"
 
@@ -14,6 +15,7 @@ UEOSManager::UEOSManager()
 	: PlatformHandle( NULL )
 	, bEOSInitialized( false )
 	, Authentication( nullptr )
+	, Metrics( nullptr )
 {
 	
 }
@@ -92,6 +94,9 @@ bool UEOSManager::InitEOS()
 
 		ProductId = EOSConfig->ProductId;
 		SandboxId = EOSConfig->SandboxId;
+
+		PlatformOptions.ProductId = TCHAR_TO_UTF8( *ProductId );
+		PlatformOptions.SandboxId = TCHAR_TO_UTF8( *SandboxId );
 
 		PlatformOptions.ClientCredentials.ClientId = ( EOSConfig->ClientId.IsEmpty() ) ? nullptr : TCHAR_TO_UTF8( *EOSConfig->ClientId );
 		PlatformOptions.ClientCredentials.ClientSecret = ( EOSConfig->ClientSecret.IsEmpty() ) ? nullptr : TCHAR_TO_UTF8( *EOSConfig->ClientSecret );
@@ -209,6 +214,26 @@ bool UEOSManager::ShutdownEOS()
 	return bShutdownSuccess;
 }
 
+bool UEOSManager::UpdateEOS()
+{
+	if( bEOSInitialized == true )
+	{
+		if( PlatformHandle != nullptr )
+		{
+			EOS_Platform_Tick( PlatformHandle );
+
+			return true;
+		}
+
+		FString MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Unable to UpdateEOS - Platform Handle is NULL." ) );
+		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+	}
+
+	// Not logging if EOS hasn't been initialized - to avoid spamming the Log.
+
+	return false;
+}
+
 UEOSAuthentication* UEOSManager::GetAuthentication()
 {
 	if( UEOSManager::EOSManager->Authentication == nullptr )
@@ -224,6 +249,23 @@ UEOSAuthentication* UEOSManager::GetAuthentication()
 	}
 
 	return UEOSManager::EOSManager->Authentication;
+}
+
+UEOSMetrics* UEOSManager::GetMetrics()
+{
+	if( UEOSManager::EOSManager->Metrics == nullptr )
+	{
+		UEOSManager::EOSManager->Metrics = NewObject<UEOSMetrics>( UEOSManager::EOSManager );
+	}
+
+	if( UEOSManager::EOSManager->Metrics == nullptr )
+	{
+		// Failed to instantiate the Metrics object.
+		FString MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Failed to create Metrics Object." ) );
+		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+	}
+
+	return UEOSManager::EOSManager->Metrics;
 }
 
 FString UEOSManager::EOSResultToString( EOS_EResult Result )

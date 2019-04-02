@@ -34,12 +34,6 @@ public:
 
 	UEOSConfig();
 
-	/** Returns whether the EOS is currently enabled or not. */
-	bool			GetEnableEOS();
-
-	/** Sets whether EOS is enabled or disabled. */
-	void			SetEnableEOS( bool bEnabled );
-
 	/** Sets the ProductID. */
 	void			SetProductId( FString NewProductId );
 
@@ -60,10 +54,6 @@ public:
 
 	/** Sets the Target Log Level. */
 	void			SetLogLevel( ELogLevel NewLogLevel );
-
-	/** Whether EOS is enabled at all.  Defaults to true. */
-	UPROPERTY( config, EditAnywhere, Category = "UEOS" )
-		bool		bEnableEOS;
 
 	/** The ProductID to pass to EOS for this Project. */
 	UPROPERTY( config, EditAnywhere, Category = "UEOS" )

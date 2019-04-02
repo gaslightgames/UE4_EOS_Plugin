@@ -13,6 +13,7 @@
 
 // Forward Declarations
 class UEOSAuthentication;
+class UEOSMetrics;
 
 
 UCLASS()
@@ -65,6 +66,14 @@ public:
 		static UEOSAuthentication*				GetAuthentication();
 
 	/**
+	* Attempts to return the current Metrics object.
+	*
+	* @return UEOSMetrics* The current Metrics object, or nullptr if not valid.
+	*/
+	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
+		static UEOSMetrics*						GetMetrics();
+
+	/**
 	* Utility to return an EOS Result as a FString.
 	*
 	* @param Result The EOS Result to attempt to convert.
@@ -79,6 +88,9 @@ protected:
 
 	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
 		bool									ShutdownEOS();
+
+	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
+		bool									UpdateEOS();
 
 	// --------------------------------------------------------------
 	// STATIC PROPERTIES
@@ -101,6 +113,10 @@ protected:
 	/** The current Authentication object. */
 	UPROPERTY()
 		UEOSAuthentication*						Authentication;
+
+	/** The current Metric object. */
+	UPROPERTY()
+		UEOSMetrics*							Metrics;
 
 private:
 

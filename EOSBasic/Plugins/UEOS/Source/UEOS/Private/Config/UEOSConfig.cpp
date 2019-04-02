@@ -3,8 +3,7 @@
 #include "Public/Config/UEOSConfig.h"
 
 UEOSConfig::UEOSConfig()
-	: bEnableEOS( true )
-	, ProductId( "" )
+	: ProductId( "" )
 	, SandboxId( "" )
 	, ClientId( "" )
 	, ClientSecret( "" )
@@ -13,20 +12,6 @@ UEOSConfig::UEOSConfig()
 	, LogLevel( ELogLevel::LL_VeryVerbose )
 {
 
-}
-
-bool UEOSConfig::GetEnableEOS()
-{
-	return bEnableEOS;
-}
-
-void UEOSConfig::SetEnableEOS( bool bEnabled )
-{
-	if( bEnableEOS != bEnabled )
-	{
-		bEnableEOS = bEnabled;
-		SaveConfig();
-	}
 }
 
 void UEOSConfig::SetProductId( FString NewProductId )
