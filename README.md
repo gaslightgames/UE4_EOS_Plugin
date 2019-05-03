@@ -21,3 +21,7 @@ N will attempt to Begin a Player Session.
 M will attempt to End a Player Session.
 
 The project, blueprint nodes and comments have more direct usage information.
+
+License:
+Provided "as is."  So feel free to use it in any and all of your own projects.  Use it as a "jumping off point" to extend, fix and included into anything else you want.
+(I only ask that, if you do find it useful and fix/add something - please consider adding back to the plugin with a pull request!)
