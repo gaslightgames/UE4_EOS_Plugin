@@ -90,8 +90,8 @@ bool UEOSManager::InitEOS()
 	{
 		PlatformOptions.bIsServer = ( EOSConfig->bIsServer ) ? EOS_TRUE : EOS_FALSE;
 
-		std::string ProductId = TCHAR_TO_UTF8(*EOSConfig->ProductId);
-		std::string SandboxId = TCHAR_TO_UTF8(*EOSConfig->SandboxId);
+		std::string ProductId = TCHAR_TO_UTF8( *EOSConfig->ProductId );
+		std::string SandboxId = TCHAR_TO_UTF8( *EOSConfig->SandboxId );
 
 		PlatformOptions.ProductId = ProductId.c_str();
 		PlatformOptions.SandboxId = SandboxId.c_str();
@@ -105,24 +105,22 @@ bool UEOSManager::InitEOS()
 		if( EOSConfig->bAllowReservedPlatforms )
 		{
 			// Taken from the Sample, but this function and it's include could not be found.
-			// Left for posterity, but defaulting to NULL.
+			// Left for posterity, but defaulting to NULL (as is used in the Epic sample).
 			//SetReservedPlatformOptions( PlatformOptions );
-			PlatformOptions.Reserved = nullptr;
+			PlatformOptions.Reserved = NULL;
 		}
 		else
 		{
-			PlatformOptions.Reserved = nullptr;
+			PlatformOptions.Reserved = NULL;
 		}
 		
 		PlatformHandle = EOS_Platform_Create( &PlatformOptions );
-
-		
 	}
 
-	if (PlatformHandle == nullptr)
+	if( PlatformHandle == nullptr )
 	{
-		MessageText = FString::Printf(TEXT("[EOS SDK | Plugin] Platform Create - Failed!"));
-		UE_LOG(UEOSLog, Warning, TEXT("%s"), *MessageText);
+		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Platform Create - Failed!" ) );
+		UE_LOG( UEOSLog, Warning, TEXT("%s"), *MessageText );
 
 		return false;
 	}
