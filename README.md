@@ -9,7 +9,19 @@ If you download and run the sample project, you will need to:
 - Retrieved your ProductId and SandboxId
 - Add the ProductId and SandboxId's to the Settings in Project Settings -> UEOS
 
-In the sample, within the Player Controller, there are two events connected to simple actions.  Currently 'E' and 'S'.
+In the sample, within the Player Controller, there are several input events connected to simple actions.
 E will attempt to initialise the EOS SDK, passing your parameters.
 S will attempt to shutdown the EOS SDK.
-Obviously you will want/need to move this to something more appropriate for your project.
+
+(Obviously you will want/need to move this to something more appropriate for your project.)
+
+Once you have the SDK initialized, then you can use:
+B will initialize a Metric.
+N will attempt to Begin a Player Session.
+M will attempt to End a Player Session.
+
+The project, blueprint nodes and comments have more direct usage information.
+
+License:
+Provided "as is."  So feel free to use it in any and all of your own projects.  Use it as a "jumping off point" to extend, fix and included into anything else you want.
+(I only ask that, if you do find it useful and fix/add something - please consider adding back to the plugin with a pull request!)
