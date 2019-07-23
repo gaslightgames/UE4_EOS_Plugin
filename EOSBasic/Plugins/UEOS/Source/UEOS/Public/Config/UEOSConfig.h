@@ -34,6 +34,12 @@ public:
 
 	UEOSConfig();
 
+	/** Sets the Product Name. */
+	void			SetProductName( FString NewProductName );
+
+	/** Sets the Product Version. */
+	void			SetProductVersion( FString NewProductVersion );
+
 	/** Sets the ProductID. */
 	void			SetProductId( FString NewProductId );
 
@@ -54,6 +60,14 @@ public:
 
 	/** Sets the Target Log Level. */
 	void			SetLogLevel( ELogLevel NewLogLevel );
+
+	/** The Product Name to pass to EOS for this Project. */
+	UPROPERTY( config, EditAnywhere, Category = "UEOS" )
+		FString		ProductName;
+
+	/** The Product Version to pass to EOS for this Project. */
+	UPROPERTY( config, EditAnywhere, Category = "UEOS" )
+		FString		ProductVersion;
 
 	/** The ProductID to pass to EOS for this Project. */
 	UPROPERTY( config, EditAnywhere, Category = "UEOS" )

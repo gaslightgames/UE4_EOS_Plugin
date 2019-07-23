@@ -1,2 +1,13 @@
 
 EOSBasic/Plugins/UEOS/ThirdParty/*
+/EOSBasic/.vs/EOSBasic/v14
+/EOSBasic/.vs/EOSBasic/v15
+/EOSBasic/Binaries/Win64
+/EOSBasic/Build/WindowsNoEditor/FileOpenOrder
+/EOSBasic/*.db
+/EOSBasic/Intermediate/AssetRegistryCache
+/EOSBasic/Intermediate/Build
+/EOSBasic/Intermediate
+/EOSBasic/Plugins/UEOS/Binaries/Win64
+/EOSBasic/Plugins/UEOS/Intermediate/Build/Win64/UE4Editor/Development/UEOS
+/EOSBasic/Plugins/UEOS/Intermediate/Build/Win64/UE4Editor/Inc/UEOS

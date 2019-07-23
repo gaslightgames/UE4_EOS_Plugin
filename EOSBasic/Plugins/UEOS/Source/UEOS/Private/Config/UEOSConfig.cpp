@@ -3,7 +3,9 @@
 #include "Public/Config/UEOSConfig.h"
 
 UEOSConfig::UEOSConfig()
-	: ProductId( "" )
+	: ProductName( "EOS Plugin" )
+	, ProductVersion( "1.0" )
+	, ProductId( "" )
 	, SandboxId( "" )
 	, ClientId( "" )
 	, ClientSecret( "" )
@@ -12,6 +14,18 @@ UEOSConfig::UEOSConfig()
 	, LogLevel( ELogLevel::LL_VeryVerbose )
 {
 
+}
+
+void UEOSConfig::SetProductName( FString NewProductName )
+{
+	ProductName = NewProductName;
+	SaveConfig();
+}
+
+void UEOSConfig::SetProductVersion( FString NewProductVersion )
+{
+	ProductVersion = NewProductVersion;
+	SaveConfig();
 }
 
 void UEOSConfig::SetProductId( FString NewProductId )

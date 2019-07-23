@@ -59,14 +59,23 @@ bool UEOSManager::InitEOS()
 {
 	UEOSConfig* EOSConfig = GetMutableDefault<UEOSConfig>();
 
+	std::string ProductName = "UEOS Plugin";
+	std::string ProductVersion = "0.2";
+
+	if( EOSConfig != nullptr )
+	{
+		ProductName = TCHAR_TO_UTF8( *EOSConfig->ProductName );
+		ProductVersion = TCHAR_TO_UTF8( *EOSConfig->ProductVersion );
+	}
+
 	// Init EOS SDK
 	EOS_InitializeOptions SDKOptions;
 	SDKOptions.ApiVersion = EOS_INITIALIZE_API_LATEST;
 	SDKOptions.AllocateMemoryFunction = nullptr;
 	SDKOptions.ReallocateMemoryFunction = nullptr;
 	SDKOptions.ReleaseMemoryFunction = nullptr;
-	SDKOptions.ProductName = "UEOSPlugin";
-	SDKOptions.ProductVersion = "0.1";
+	SDKOptions.ProductName = ProductName.c_str();
+	SDKOptions.ProductVersion = ProductVersion.c_str();
 
 	EOS_EResult InitResult = EOS_Initialize( &SDKOptions );
 	FString MessageText;
