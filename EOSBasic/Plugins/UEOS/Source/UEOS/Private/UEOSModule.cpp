@@ -26,7 +26,7 @@ void FUEOSModule::StartupModule()
     const FString SDKDir =
       FPaths::Combine(*BaseDir, TEXT("Source"), TEXT("ThirdParty"), TEXT("EOSSDK"));
 #if PLATFORM_WINDOWS
-#if WIN32
+#if PLATFORM_32BITS
     const FString LibName = TEXT("EOSSDK-Win32-Shipping");
 #else
     const FString LibName = TEXT("EOSSDK-Win64-Shipping");
