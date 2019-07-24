@@ -1,9 +1,13 @@
 // Copyright (C) Gaslight Games Ltd, 2019
 
 #include "UEOSModule.h"
+#include "UEOSPrivatePCH.h"
+#include "IPluginManager.h"
 
 // Settings
 #include "Public/Config/UEOSConfig.h"
+
+
 #if WITH_EDITOR
 #include "ISettingsModule.h"
 #include "ISettingsSection.h"
@@ -15,6 +19,40 @@
 void FUEOSModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
+#if !PLATFORM_LINUX
+#if defined(EOS_LIB)
+    // Get the base directory of this plugin
+    FString BaseDir = IPluginManager::Get().FindPlugin("UEOS")->GetBaseDir();
+    const FString SDKDir =
+      FPaths::Combine(*BaseDir, TEXT("Source"), TEXT("ThirdParty"), TEXT("EOSSDK"));
+#if PLATFORM_WINDOWS
+#if WIN32
+    const FString LibName = TEXT("EOSSDK-Win32-Shipping");
+#else
+    const FString LibName = TEXT("EOSSDK-Win64-Shipping");
+#endif
+    const FString LibDir = FPaths::Combine(*SDKDir,  TEXT("Bin"));
+    if (!LoadDependency(LibDir, LibName, EOSSDKHandle)) {
+        FMessageDialog::Open(
+          EAppMsgType::Ok,
+          LOCTEXT(LOCTEXT_NAMESPACE,
+                  "Failed to load UEOS plugin. Plug-in will not be functional."));
+        FreeDependency(EOSSDKHandle);
+    }
+#elif PLATFORM_MAC
+    const FString LibName = TEXT("EOSSDK-Mac-Shipping");
+    const FString LibDir = FPaths::Combine(*SDKDir, TEXT("Bin"));
+    if (!LoadDependency(LibDir, LibName, EOSSDKHandle)) {
+        FMessageDialog::Open(
+          EAppMsgType::Ok,
+          LOCTEXT(LOCTEXT_NAMESPACE,
+                  "Failed to load UEOS plugin. Plug-in will not be functional."));
+        FreeDependency(EOSSDKHandle);
+    }
+#endif
+#endif
+#endif
+
 	RegisterSettings();
 }
 
@@ -22,10 +60,39 @@ void FUEOSModule::ShutdownModule()
 {
 	// This function may be called during shutdown to clean up your module.  For modules that support dynamic reloading,
 	// we call this function before unloading the module.
+
+    // Free the dll handle
+#if !PLATFORM_LINUX
+#if defined(EOS_LIB)
+    FreeDependency(EOSSDKHandle);
+#endif
+#endif
 	if( UObjectInitialized() )
 	{
 		UnregisterSettings();
 	}
+}
+
+bool FUEOSModule::LoadDependency(const FString& Dir, const FString& Name, void*& Handle)
+{
+    FString Lib = Name + TEXT(".") + FPlatformProcess::GetModuleExtension();
+    FString Path = Dir.IsEmpty() ? *Lib : FPaths::Combine(*Dir, *Lib);
+
+    Handle = FPlatformProcess::GetDllHandle(*Path);
+
+    if (Handle == nullptr) {
+        return false;
+    }
+
+    return true;
+}
+
+void FUEOSModule::FreeDependency(void*& Handle)
+{
+    if (Handle != nullptr) {
+        FPlatformProcess::FreeDllHandle(Handle);
+        Handle = nullptr;
+    }
 }
 
 bool FUEOSModule::SupportsDynamicReloading()
