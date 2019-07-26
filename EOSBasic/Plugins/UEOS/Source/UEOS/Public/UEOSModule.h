@@ -2,7 +2,7 @@
 
 #pragma once
 
-#include "Engine.h"
+#include "ModuleManager.h"
 
 class FUEOSModule : public IModuleInterface
 {
@@ -18,6 +18,14 @@ protected:
 	bool HandleSettingsSaved();
 	void RegisterSettings();
 	void UnregisterSettings();
+
+private:
+    /** Handle to the test dll we will load */
+    void* EOSSDKHandle;
+
+    /** StartupModule is covered with defines, these functions are the place to put breakpoints */
+    static bool LoadDependency(const FString& Dir, const FString& Name, void*& Handle);
+    static void FreeDependency(void*& Handle);	
 };
 
 DECLARE_LOG_CATEGORY_EXTERN( UEOSLog, Log, All );
