@@ -77,6 +77,14 @@ public:
 	UPROPERTY( config, EditAnywhere, Category = "UEOS" )
 		FString		SandboxId;
 
+	/** The authentication key to pass to the support ticket mailbox. */
+	UPROPERTY(config, EditAnywhere, Category = "UEOS")
+		FString		SupportTicketingKey;
+
+	/** The URL to send support tickets to. */
+	UPROPERTY(config, EditAnywhere, Category = "UEOS")
+		FString		SupportTicketingURL;
+
 	/** The ClientID to pass to EOS for this Project. */
 	UPROPERTY( config, EditAnywhere, Category = "UEOS" )
 		FString		ClientId;
