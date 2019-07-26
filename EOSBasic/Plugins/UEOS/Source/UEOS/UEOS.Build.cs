@@ -1,4 +1,4 @@
-// (C) Gaslight Games Ltd, 2017-2019.  All rights reserved.
+// (C) Gaslight Games Ltd, 2019.  All rights reserved.
 
 using UnrealBuildTool;
 using System.IO;
@@ -8,7 +8,7 @@ public class UEOS : ModuleRules
     public UEOS( ReadOnlyTargetRules Target ) : base( Target )
     {
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
-        PublicDefinitions.Add("EOS_LIB=1");
+        PublicDefinitions.Add( "EOS_LIB=1" );
 
         PublicIncludePaths.AddRange(
             new string[] {
@@ -51,9 +51,5 @@ public class UEOS : ModuleRules
 				// ... add any modules that your module loads dynamically here ...
 			}
             );
-
-        string BaseDirectory = Path.GetFullPath(Path.Combine(ModuleDirectory, "..", "..", "Source", "ThirdParty", "EOSSDK"));
-        PublicIncludePaths.Add(Path.Combine(BaseDirectory, "Include"));
-
     }
 }

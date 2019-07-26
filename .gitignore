@@ -11,3 +11,8 @@ EOSBasic/Plugins/UEOS/ThirdParty/*
 /EOSBasic/Plugins/UEOS/Binaries/Win64
 /EOSBasic/Plugins/UEOS/Intermediate/Build/Win64/UE4Editor/Development/UEOS
 /EOSBasic/Plugins/UEOS/Intermediate/Build/Win64/UE4Editor/Inc/UEOS
+/EOSBasic/EOSBasic.sln
+/EOSBasic/Plugins/UEOS/Source/ThirdParty/EOSSDK/Bin
+/EOSBasic/Plugins/UEOS/Source/ThirdParty/EOSSDK/Include
+/EOSBasic/Plugins/UEOS/Source/ThirdParty/EOSSDK/Lib
+/EOSBasic/Saved

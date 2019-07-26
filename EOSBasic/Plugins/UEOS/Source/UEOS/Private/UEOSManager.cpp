@@ -15,6 +15,7 @@ UEOSManager* UEOSManager::EOSManager = nullptr;
 UEOSManager::UEOSManager()
 	: PlatformHandle( NULL )
 	, bEOSInitialized( false )
+	, bEOSShutdown( false )
 	, Authentication( nullptr )
 	, Metrics( nullptr )
 {
@@ -50,13 +51,33 @@ bool UEOSManager::IsEOSInitialized()
 	return false;
 }
 
+bool UEOSManager::HasEOSBeenShutdown()
+{
+	if( UEOSManager::EOSManager != nullptr )
+	{
+		return UEOSManager::EOSManager->bEOSShutdown;
+	}
+
+	return false;
+}
+
 EOS_HPlatform UEOSManager::GetPlatformHandle()
 {
 	return UEOSManager::EOSManager->PlatformHandle;
 }
 
-bool UEOSManager::InitEOS()
+EEOSResults UEOSManager::InitEOS()
 {
+	if( IsEOSInitialized() )
+	{
+		return EEOSResults::ER_AlreadyInitialized;
+	}
+
+	if( bEOSShutdown == true )
+	{
+		return EEOSResults::ER_AlreadyShutdown;
+	}
+
 	UEOSConfig* EOSConfig = GetMutableDefault<UEOSConfig>();
 
 	std::string ProductName = "UEOS Plugin";
@@ -85,7 +106,7 @@ bool UEOSManager::InitEOS()
 		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Init Failed." ) );
 		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
 
-		return false;
+		return UEOSCommon::GetResultsValue( InitResult );
 	}
 
 	MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Init Success!" ) );
@@ -131,7 +152,7 @@ bool UEOSManager::InitEOS()
 		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Platform Create - Failed!" ) );
 		UE_LOG( UEOSLog, Warning, TEXT("%s"), *MessageText );
 
-		return false;
+		return EEOSResults::ER_PlatformFailed;
 	}
 	
 
@@ -147,7 +168,7 @@ bool UEOSManager::InitEOS()
 		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Set Logging Callback Failed!" ) );
 		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
 
-		return false;
+		return UEOSCommon::GetResultsValue( SetLogCallbackResult );
 	}
 
 	MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging Callback Set." ) );
@@ -188,11 +209,21 @@ bool UEOSManager::InitEOS()
 	EOS_Logging_SetLogLevel( EOS_ELogCategory::EOS_LC_ALL_CATEGORIES, EOSLogLevel );
 
 	bEOSInitialized = true;
-	return true;
+	return EEOSResults::ER_Success;
 }
 
-bool UEOSManager::ShutdownEOS()
+EEOSResults UEOSManager::ShutdownEOS()
 {
+	if( !IsEOSInitialized() )
+	{
+		return EEOSResults::ER_NotInitialized;
+	}
+
+	if( bEOSShutdown == true )
+	{
+		return EEOSResults::ER_AlreadyShutdown;
+	}
+
 	if( PlatformHandle != nullptr )
 	{
 		EOS_Platform_Release( PlatformHandle );
@@ -201,7 +232,8 @@ bool UEOSManager::ShutdownEOS()
 	EOS_EResult ShutdownResult = EOS_Shutdown();
 
 	FString MessageText;
-	bool bShutdownSuccess = false;
+	EEOSResults eShutdownSuccess = UEOSCommon::GetResultsValue( ShutdownResult );
+
 	if( ShutdownResult != EOS_EResult::EOS_Success )
 	{
 		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Shutdown Failed." ) );
@@ -209,13 +241,13 @@ bool UEOSManager::ShutdownEOS()
 	else
 	{
 		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Shutdown Complete." ) );
-		bShutdownSuccess = true;
 		bEOSInitialized = false;
+		bEOSShutdown = true;
 	}
 
 	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
 
-	return bShutdownSuccess;
+	return eShutdownSuccess;
 }
 
 bool UEOSManager::UpdateEOS()

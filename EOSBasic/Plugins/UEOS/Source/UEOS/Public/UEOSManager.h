@@ -2,12 +2,8 @@
 
 #pragma once
 
-// Engine Includes
-#include "Object.h"
-
 // EOS Includes
-#include "eos_sdk.h"
-#include "eos_logging.h"
+#include "UEOSCommon.h"
 
 #include "UEOSManager.generated.h"
 
@@ -51,6 +47,16 @@ public:
 		static bool								IsEOSInitialized();
 
 	/**
+	* Whether the EOS System has been shutdown or not.
+	* If it HAS been shutdown in this session, no other calls (not even Initialization)
+	* can be made without an application restart.
+	*
+	* @return bool True if initialized, otherwise false.
+	*/
+	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
+		static bool								HasEOSBeenShutdown();
+
+	/**
 	* Attempts to return the current Platform Handle.
 	*
 	* @return EOS_HPlatform The current Platform Handle.
@@ -84,10 +90,10 @@ public:
 protected:
 
 	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
-		bool									InitEOS();
+		EEOSResults								InitEOS();
 
 	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
-		bool									ShutdownEOS();
+		EEOSResults								ShutdownEOS();
 
 	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
 		bool									UpdateEOS();
@@ -109,6 +115,11 @@ protected:
 	/** Whether the EOS System has been initialized. */
 	UPROPERTY()
 		bool									bEOSInitialized;
+
+	/** Whether the EOS System has been Shutdown.  If it has, it CANNOT be reinitialized without a full
+	 * application restart, as any further calls would result in undefined behaviour. */
+	UPROPERTY()
+		bool									bEOSShutdown;
 
 	/** The current Authentication object. */
 	UPROPERTY()
