@@ -87,6 +87,56 @@ public:
 	*/
 	static FString								EOSResultToString( EOS_EResult Result );
 
+	/// CONFIG GETTERS
+
+	/**
+	* Returns the ProductID used in this project.
+	*
+	* @return FString The ProductID that passed to EOS for this Project.
+	*/
+	UFUNCTION( BlueprintPure, Category = "UEOS", meta = ( Keywords = "Get Product Id" ) )
+		static FString							GetProductId();
+
+	/**
+	* Returns the SandboxID used in this project.
+	*
+	* @return FString The SandboxID that passed to EOS for this Project.
+	*/
+	UFUNCTION( BlueprintPure, Category = "UEOS", meta = ( Keywords = "Get Sandbox Id" ) )
+		static FString							GetSandboxId();
+
+	/**
+	* Returns the Support Ticketing authentication key used in this project.
+	*
+	* @return FString The authentication key that is passed to the support ticket mailbox.
+	*/
+	UFUNCTION( BlueprintPure, Category = "UEOS", meta = ( Keywords = "Get Support Ticketing Key" ) )
+		static FString							GetSupportTicketingKey();
+
+	/**
+	* Returns the The URL to send EOS support tickets to.
+	*
+	* @return FString The URL that is used to send support tickets.
+	*/
+	UFUNCTION( BlueprintPure, Category = "UEOS", meta = ( Keywords = "Get Support Ticketing URL" ) )
+		static FString							GetSupportTicketingURL();
+
+	/**
+	* Returns the ClientID used in this project.
+	*
+	* @return FString The ClientID that passed to EOS for this Project.
+	*/
+	UFUNCTION( BlueprintPure, Category = "UEOS", meta = ( Keywords = "Get Client Id" ) )
+		static FString							GetClientId();
+
+	/**
+	* Returns the ClientSecret used in this project.
+	*
+	* @return FString The ClientSecret that passed to EOS for this Project.
+	*/
+	UFUNCTION( BlueprintPure, Category = "UEOS", meta = ( Keywords = "Get Client Secret" ) )
+		static FString							GetClientSecret();
+
 protected:
 
 	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )

@@ -34,33 +34,6 @@ public:
 
 	UEOSConfig();
 
-	/** Sets the Product Name. */
-	void			SetProductName( FString NewProductName );
-
-	/** Sets the Product Version. */
-	void			SetProductVersion( FString NewProductVersion );
-
-	/** Sets the ProductID. */
-	void			SetProductId( FString NewProductId );
-
-	/** Sets the SandboxID. */
-	void			SetSandboxId( FString NewSandboxId );
-
-	/** Sets the ClientID. */
-	void			SetClientId( FString NewClientId );
-
-	/** Sets the ClientSecret. */
-	void			SetClientSecret( FString NewClientSecret );
-
-	/** Sets whether this is a Server for EOS, or not. */
-	void			SetIsServer( bool bServer );
-
-	/** Sets whether EOS uses Reserved Platforms or not. */
-	void			SetAllowReservedPlatforms( bool bAllow );
-
-	/** Sets the Target Log Level. */
-	void			SetLogLevel( ELogLevel NewLogLevel );
-
 	/** The Product Name to pass to EOS for this Project. */
 	UPROPERTY( config, EditAnywhere, Category = "UEOS" )
 		FString		ProductName;
@@ -76,6 +49,14 @@ public:
 	/** The SandboxID to pass to EOS for this Project. */
 	UPROPERTY( config, EditAnywhere, Category = "UEOS" )
 		FString		SandboxId;
+
+	/** The authentication key to pass to the support ticket mailbox. */
+	UPROPERTY( config, EditAnywhere, Category = "UEOS" )
+		FString		SupportTicketingKey;
+
+	/** The URL to send support tickets to. */
+	UPROPERTY( config, EditAnywhere, Category = "UEOS" )
+		FString		SupportTicketingURL;
 
 	/** The ClientID to pass to EOS for this Project. */
 	UPROPERTY( config, EditAnywhere, Category = "UEOS" )

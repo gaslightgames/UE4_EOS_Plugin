@@ -458,3 +458,87 @@ void UEOSManager::EOSSDKLoggingCallback( const EOS_LogMessage* InMsg )
 	FString Message( InMsg->Message );
 	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *Message );
 }
+
+FString UEOSManager::GetProductId()
+{
+	FString retVal = "";
+
+	UEOSConfig* EOSConfig = GetMutableDefault<UEOSConfig>();
+
+	if( EOSConfig != nullptr )
+	{
+		retVal = EOSConfig->ProductId;
+	}
+
+	return retVal;
+}
+
+FString UEOSManager::GetSandboxId()
+{
+	FString retVal = "";
+
+	UEOSConfig* EOSConfig = GetMutableDefault<UEOSConfig>();
+
+	if( EOSConfig != nullptr )
+	{
+		retVal = EOSConfig->SandboxId;
+	}
+
+	return retVal;
+}
+
+FString UEOSManager::GetSupportTicketingKey()
+{
+	FString retVal = "";
+
+	UEOSConfig* EOSConfig = GetMutableDefault<UEOSConfig>();
+
+	if( EOSConfig != nullptr )
+	{
+		retVal = EOSConfig->SupportTicketingKey;
+	}
+
+	return retVal;
+}
+
+FString UEOSManager::GetSupportTicketingURL()
+{
+	FString retVal = "";
+
+	UEOSConfig* EOSConfig = GetMutableDefault<UEOSConfig>();
+
+	if( EOSConfig != nullptr )
+	{
+		retVal = EOSConfig->SupportTicketingURL;
+	}
+
+	return retVal;
+}
+
+FString UEOSManager::GetClientId()
+{
+	FString retVal = "";
+
+	UEOSConfig* EOSConfig = GetMutableDefault<UEOSConfig>();
+
+	if( EOSConfig != nullptr )
+	{
+		retVal = EOSConfig->ClientId;
+	}
+
+	return retVal;
+}
+
+FString UEOSManager::GetClientSecret()
+{
+	FString retVal = "";
+
+	UEOSConfig* EOSConfig = GetMutableDefault<UEOSConfig>();
+
+	if( EOSConfig != nullptr )
+	{
+		retVal = EOSConfig->ClientSecret;
+	}
+
+	return retVal;
+}

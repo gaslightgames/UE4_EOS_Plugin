@@ -117,7 +117,7 @@ bool UEOSMetrics::EndPlayerSession( FString DisplayName )
 
 	if( MetricsHandle == nullptr )
 	{
-		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Cannot EndPlayerSession - no Platform Handle." ) );
+		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Cannot EndPlayerSession - no Metrics Handle." ) );
 		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
 
 		return false;
