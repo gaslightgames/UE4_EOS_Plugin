@@ -127,6 +127,15 @@ void FUEOSModule::UnregisterSettings()
 	
 }
 
+void FUEOSModule::Tick(float DeltaTime)
+{
+	UEOSManager* EOSManager = UEOSManager::GetEOSManager();
+	if (EOSManager != nullptr)
+	{
+		EOSManager->UpdateEOS();
+	}
+}
+
 #undef LOCTEXT_NAMESPACE
 	
 IMPLEMENT_MODULE( FUEOSModule, UEOS )

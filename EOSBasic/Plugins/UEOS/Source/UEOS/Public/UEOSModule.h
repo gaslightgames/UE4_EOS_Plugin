@@ -3,8 +3,9 @@
 #pragma once
 
 #include "ModuleManager.h"
+#include "Tickable.h"
 
-class FUEOSModule : public IModuleInterface
+class FUEOSModule : public IModuleInterface, public FTickableGameObject
 {
 public:
 
@@ -12,6 +13,16 @@ public:
 	virtual void StartupModule() override;
 	virtual void ShutdownModule() override;
 	virtual bool SupportsDynamicReloading() override;
+
+	/** FTickableGameObject implementation */
+	bool IsTickable() const override { return true; }
+	bool IsTickableInEditor() const override { return true; }
+	bool IsTickableWhenPaused() const override { return true; }
+	TStatId GetStatId() const override
+	{
+		return TStatId();
+	}
+	void Tick(float DeltaTime) override;
 
 protected:
 
