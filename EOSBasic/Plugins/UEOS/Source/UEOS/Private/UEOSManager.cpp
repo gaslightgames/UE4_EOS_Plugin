@@ -18,6 +18,8 @@ UEOSManager::UEOSManager()
 	, bEOSShutdown( false )
 	, Authentication( nullptr )
 	, Metrics( nullptr )
+	, Friends( nullptr )
+	, UserInfo( nullptr )
 {
 	
 }
@@ -302,6 +304,40 @@ UEOSMetrics* UEOSManager::GetMetrics()
 	}
 
 	return UEOSManager::EOSManager->Metrics;
+}
+
+UEOSFriends* UEOSManager::GetFriends()
+{
+	if( UEOSManager::EOSManager->Friends == nullptr )
+	{
+		UEOSManager::EOSManager->Friends = NewObject<UEOSFriends>( UEOSManager::EOSManager );
+	}
+
+	if( UEOSManager::EOSManager->Friends == nullptr )
+	{
+		// Failed to instantiate the Friends object.
+		FString MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Failed to create Friends Object." ) );
+		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+	}
+
+	return UEOSManager::EOSManager->Friends;
+}
+
+UEOSUserInfo* UEOSManager::GetUserInfo()
+{
+	if( UEOSManager::EOSManager->UserInfo == nullptr )
+	{
+		UEOSManager::EOSManager->UserInfo = NewObject<UEOSUserInfo>( UEOSManager::EOSManager );
+	}
+
+	if( UEOSManager::EOSManager->UserInfo == nullptr )
+	{
+		// Failed to instantiate the UserInfo object.
+		FString MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Failed to create UserInfo Object." ) );
+		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+	}
+
+	return UEOSManager::EOSManager->UserInfo;
 }
 
 FString UEOSManager::EOSResultToString( EOS_EResult Result )
