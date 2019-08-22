@@ -32,8 +32,11 @@ enum class ELoginMode : uint8
 /**
 * Adapted from the sample, to work within UE4 UBT.
 */
-struct FAccountId
+USTRUCT()
+struct UEOS_API FAccountId
 {
+	GENERATED_BODY()
+
 	/**
 	* Construct wrapper from account id.
 	*/
@@ -75,6 +78,8 @@ struct FAccountId
 	* Prints out account ID as hex.
 	*/
 	FString			ToString() const;
+
+	static FAccountId FromString(const FString& AccountId);
 
 	/** The EOS SDK matching Account Id. */
 	EOS_AccountId	AccountId;
@@ -121,6 +126,18 @@ public:
 		bool						GetAuthorised();
 
 	/**
+	* Creates an auth token for use elsewhere (for example, on a server).
+	* Returns true on succcess, false on failure.
+	* Must be cleaned up by calling ReleaseAuthToken when you're done with it.
+	*/
+	bool GetAuthTokenCopy(EOS_Auth_Token** OutToken);
+
+	/**
+	* Cleans up memory that had been allocated in GetAuthTokenCopy
+	*/
+	void ReleaseAuthToken(EOS_Auth_Token* Token);
+
+	/**
 	* Utility to convert account id to a string
 	*
 	* @param InAccountId - Account id to convert
@@ -151,6 +168,12 @@ public:
 	*/
 	UPROPERTY( BlueprintAssignable, Category = "UEOS|Authentication" )
 		FOnUserLoginFail			OnUserLoginFail;
+
+	UFUNCTION()
+	FAccountId GetAccountId() const
+	{
+		return AccountId;
+	}
 
 protected:
 
