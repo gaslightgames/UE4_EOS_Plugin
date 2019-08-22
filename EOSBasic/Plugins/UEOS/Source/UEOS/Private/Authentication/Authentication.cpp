@@ -131,13 +131,6 @@ void UEOSAuthentication::LoginCompleteCallback( const EOS_Auth_LoginCallbackInfo
 	{
 		UEOSManager::GetAuthentication()->AccountId = Data->LocalUserId;
 
-		EOS_Auth_Token* UserAuthToken;
-		if( EOS_Auth_CopyUserAuthToken( AuthHandle, UEOSManager::GetAuthentication()->AccountId, &UserAuthToken ) == EOS_EResult::EOS_Success )
-		{
-			PrintAuthToken( UserAuthToken );
-			EOS_Auth_Token_Release( UserAuthToken );
-		}
-
 		const int32_t AccountsCount = EOS_Auth_GetLoggedInAccountsCount( AuthHandle );
 		for( int32_t AccountIdx = 0; AccountIdx < AccountsCount; ++AccountIdx )
 		{
