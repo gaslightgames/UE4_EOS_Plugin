@@ -10,6 +10,8 @@
 // Forward Declarations
 class UEOSAuthentication;
 class UEOSMetrics;
+class UEOSFriends;
+class UEOSUserInfo;
 
 
 UCLASS()
@@ -80,6 +82,22 @@ public:
 		static UEOSMetrics*						GetMetrics();
 
 	/**
+	 * Attempts to return the current Friends object.
+	 *
+	 * @return UEOSFriends* The current Friends object, or nullptr if not valid.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "UEOS|Manager")
+		static UEOSFriends* GetFriends();
+
+	/**
+	 * Attempts to return the current UserInfo object.
+	 *
+	 * @return UEOSUserInfo* The current UserInfo object, or nullptr if not valid.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "UEOS|Manager")
+		static UEOSUserInfo* GetUserInfo();
+
+	/**
 	* Utility to return an EOS Result as a FString.
 	*
 	* @param Result The EOS Result to attempt to convert.
@@ -137,8 +155,6 @@ public:
 	UFUNCTION( BlueprintPure, Category = "UEOS", meta = ( Keywords = "Get Client Secret" ) )
 		static FString							GetClientSecret();
 
-protected:
-
 	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
 		EEOSResults								InitEOS();
 
@@ -147,6 +163,8 @@ protected:
 
 	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
 		bool									UpdateEOS();
+
+protected:
 
 	// --------------------------------------------------------------
 	// STATIC PROPERTIES
@@ -178,6 +196,14 @@ protected:
 	/** The current Metric object. */
 	UPROPERTY()
 		UEOSMetrics*							Metrics;
+
+	/** The current Friends object. */
+	UPROPERTY()
+		UEOSFriends* Friends;
+
+	/** The current UserInfo object. */
+	UPROPERTY()
+		UEOSUserInfo* UserInfo;
 
 private:
 
