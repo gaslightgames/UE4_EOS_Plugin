@@ -35,22 +35,14 @@ void UEOSAuthentication::Login( ELoginMode LoginMode, FString UserId, FString Us
 	memset( &LoginOptions, 0, sizeof( LoginOptions ) );
 	LoginOptions.ApiVersion = EOS_AUTH_LOGIN_API_LATEST;
 
-	static char UserIdStr[128];
-	std::string userIdTmp = TCHAR_TO_UTF8( *UserId );
-	sprintf_s( UserIdStr, sizeof( UserIdStr ), "%s", userIdTmp.c_str() );//TCHAR_TO_UTF8( *UserId ) );// StringUtils::Narrow( FirstStr ).c_str() );
-
-	static char UserTokenStr[128];
-	std::string userTokenTmp = TCHAR_TO_UTF8( *UserToken );
-	sprintf_s( UserTokenStr, sizeof( UserTokenStr ), "%s", userTokenTmp.c_str() );// TCHAR_TO_UTF8( *UserToken ) );// StringUtils::Narrow( SecondStr ).c_str() );
-
 	switch( LoginMode )
 	{
 		case ELoginMode::LM_IDPassword:
 		{
 			MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In as User Id: %s." ), *UserId );
 			UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
-			Credentials.Id = TCHAR_TO_UTF8( *UserId );//UserIdStr;
-			Credentials.Token = TCHAR_TO_UTF8( *UserToken );//UserTokenStr;
+			Credentials.Id = TCHAR_TO_UTF8( *UserId );
+			Credentials.Token = TCHAR_TO_UTF8( *UserToken );
 			Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_Password;
 			break;
 		}
@@ -58,7 +50,7 @@ void UEOSAuthentication::Login( ELoginMode LoginMode, FString UserId, FString Us
 		{
 			MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In with Exchange Code." ) );
 			UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
-			Credentials.Token = TCHAR_TO_UTF8( *UserId );//UserIdStr;
+			Credentials.Token = TCHAR_TO_UTF8( *UserId );
 			Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_ExchangeCode;
 			break;
 		}
@@ -67,6 +59,16 @@ void UEOSAuthentication::Login( ELoginMode LoginMode, FString UserId, FString Us
 			MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In with Pin Grant." ) );
 			UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
 			Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_DeviceCode;
+			break;
+		}
+		case ELoginMode::LM_DevTool:
+		{
+			MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In with Dev Auth Tool." ) );
+			UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+			Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_Developer;
+			Credentials.Id = TCHAR_TO_UTF8( *UserId );
+			Credentials.Token = TCHAR_TO_UTF8( *UserToken );
+
 			break;
 		}
 	}
@@ -98,13 +100,13 @@ bool UEOSAuthentication::GetAuthorised()
 	return bAuthorised;
 }
 
-bool UEOSAuthentication::GetAuthTokenCopy(EOS_Auth_Token** OutToken)
+bool UEOSAuthentication::GetAuthTokenCopy( EOS_Auth_Token** OutToken )
 {
-	EOS_EResult Result = EOS_Auth_CopyUserAuthToken(AuthHandle, UEOSManager::GetAuthentication()->AccountId, OutToken);
+	EOS_EResult Result = EOS_Auth_CopyUserAuthToken( AuthHandle, UEOSManager::GetAuthentication()->AccountId, OutToken );
 	return Result == EOS_EResult::EOS_Success;
 }
 
-void UEOSAuthentication::ReleaseAuthToken(EOS_Auth_Token* Token)
+void UEOSAuthentication::ReleaseAuthToken( EOS_Auth_Token* Token )
 {
 	EOS_Auth_Token_Release( Token );
 }

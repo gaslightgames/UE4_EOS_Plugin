@@ -26,7 +26,8 @@ enum class ELoginMode : uint8
 	LM_Unknown			UMETA( DisplayName = "Unknown" ),		/** Unknown Login Type */
 	LM_IDPassword		UMETA( DisplayName = "Password" ),		/** Login using a user id and password token */
 	LM_ExchangeCode		UMETA( DisplayName = "Exchange Code" ),	/** Login using an exchange code */
-	LM_PinGrant			UMETA( DisplayName = "Pin Grant" )		/** Login using a pin grant */
+	LM_PinGrant			UMETA( DisplayName = "Pin Grant" ),		/** Login using a pin grant */
+	LM_DevTool			UMETA( DisplayName = "Dev Tool" )		/** Login using the EOS SDK Dev Auth Tool */
 };
 
 /**
@@ -77,12 +78,18 @@ struct UEOS_API FAccountId
 	/**
 	* Prints out account ID as hex.
 	*/
-	FString			ToString() const;
+	FString					ToString() const;
 
-	static FAccountId FromString(const FString& AccountId);
+	/** 
+	* Returns an Account ID from a String interpretation of one.
+	*
+	* @param AccountId the FString representation of an Account ID.
+	* @return FAccountId An Account ID from the string, if valid.
+	*/
+	static FAccountId		FromString( const FString& AccountId );
 
 	/** The EOS SDK matching Account Id. */
-	EOS_AccountId	AccountId;
+	EOS_AccountId			AccountId;
 };
 
 UCLASS()
@@ -127,15 +134,19 @@ public:
 
 	/**
 	* Creates an auth token for use elsewhere (for example, on a server).
-	* Returns true on succcess, false on failure.
 	* Must be cleaned up by calling ReleaseAuthToken when you're done with it.
+	*
+	* @param OutToken A copy of the Auth Token.
+	* @return bool true on succcess, false on failure.
 	*/
-	bool GetAuthTokenCopy(EOS_Auth_Token** OutToken);
+	bool							GetAuthTokenCopy( EOS_Auth_Token** OutToken );
 
 	/**
 	* Cleans up memory that had been allocated in GetAuthTokenCopy
+	*
+	* @param Token The Auth Token to clean-up/releae.
 	*/
-	void ReleaseAuthToken(EOS_Auth_Token* Token);
+	void							ReleaseAuthToken( EOS_Auth_Token* Token );
 
 	/**
 	* Utility to convert account id to a string

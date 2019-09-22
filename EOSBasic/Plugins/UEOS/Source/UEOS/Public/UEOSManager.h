@@ -87,16 +87,16 @@ public:
 	 *
 	 * @return UEOSFriends* The current Friends object, or nullptr if not valid.
 	 */
-	UFUNCTION(BlueprintCallable, Category = "UEOS|Manager")
-		static UEOSFriends* GetFriends();
+	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
+		static UEOSFriends*						GetFriends();
 
 	/**
 	 * Attempts to return the current UserInfo object.
 	 *
 	 * @return UEOSUserInfo* The current UserInfo object, or nullptr if not valid.
 	 */
-	UFUNCTION(BlueprintCallable, Category = "UEOS|Manager")
-		static UEOSUserInfo* GetUserInfo();
+	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
+		static UEOSUserInfo*					GetUserInfo();
 
 	/**
 	* Utility to return an EOS Result as a FString.
@@ -164,7 +164,7 @@ public:
 		EEOSResults						  		ShutdownEOS();
 
 	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
-		bool							       		UpdateEOS();
+		bool							       	UpdateEOS();
 
 protected:
 
@@ -173,7 +173,7 @@ protected:
 	// --------------------------------------------------------------
 
 	/** The singleton UEOSManager instance. */
-	static UEOSManager*						EOSManager;
+	static UEOSManager*							EOSManager;
 
 	// --------------------------------------------------------------
 	// INSTANCE PROPERTIES
@@ -184,28 +184,28 @@ protected:
 
 	/** Whether the EOS System has been initialized. */
 	UPROPERTY()
-		bool								      	bEOSInitialized;
+		bool									bEOSInitialized;
 
 	/** Whether the EOS System has been Shutdown.  If it has, it CANNOT be reinitialized without a full
 	 * application restart, as any further calls would result in undefined behaviour. */
 	UPROPERTY()
-		bool								      	bEOSShutdown;
+		bool									bEOSShutdown;
 
 	/** The current Authentication object. */
 	UPROPERTY()
-		UEOSAuthentication*					Authentication;
+		UEOSAuthentication*						Authentication;
 
 	/** The current Metric object. */
 	UPROPERTY()
-		UEOSMetrics*				  		  Metrics;
+		UEOSMetrics*							Metrics;
 
 	/** The current Friends object. */
 	UPROPERTY()
-		UEOSFriends*               Friends;
+		UEOSFriends*							Friends;
 
 	/** The current UserInfo object. */
 	UPROPERTY()
-		UEOSUserInfo*              UserInfo;
+		UEOSUserInfo*							UserInfo;
 
 private:
 
@@ -215,4 +215,5 @@ private:
 	* @param InMsg - A structure representing data for a log message
 	*/
 	static void									EOSSDKLoggingCallback( const EOS_LogMessage* InMsg );
+
 };

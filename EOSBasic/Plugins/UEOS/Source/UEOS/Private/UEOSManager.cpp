@@ -5,8 +5,11 @@
 #include "Config/UEOSConfig.h"
 #include "Authentication/Authentication.h"
 #include "Metrics/Metrics.h"
+#include "UserInfo/UserInfo.h"
+#include "Friends/Friends.h"
 
 #include "UEOSModule.h"
+
 #include <string>
 
 // Static Initialization
@@ -83,7 +86,7 @@ EEOSResults UEOSManager::InitEOS()
 	UEOSConfig* EOSConfig = GetMutableDefault<UEOSConfig>();
 
 	std::string ProductName = "UEOS Plugin";
-	std::string ProductVersion = "0.2";
+	std::string ProductVersion = "0.3";
 
 	if( EOSConfig != nullptr )
 	{

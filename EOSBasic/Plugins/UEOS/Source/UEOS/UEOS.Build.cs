@@ -12,14 +12,14 @@ public class UEOS : ModuleRules
 
         PublicIncludePaths.AddRange(
             new string[] {
-                Path.Combine(ModuleDirectory, "Public")
+                Path.Combine( ModuleDirectory, "Public" )
             }
             );
 
 
         PrivateIncludePaths.AddRange(
             new string[] {
-                Path.Combine(ModuleDirectory, "Private")
+                Path.Combine( ModuleDirectory, "Private" )
             }
             );
 

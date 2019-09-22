@@ -29,32 +29,36 @@ class UEOS_API UEOSFriends : public UObject
 public:
 
 	UEOSFriends();
+
 	void Init();
+
 	/**
 	 * Begins an async process that requests the friends count, account ids, and statuses of the local player's friends.
 	 * Broadcasts OnFriendsRefreshed when completed.
 	 */
-	void RefreshFriends();
-	int GetFriendsCount();
-	FAccountId GetAccountId(int Index);
-	EFriendStatus GetStatus(FAccountId AccountId);
+	void						RefreshFriends();
+
+	int							GetFriendsCount();
+	FAccountId					GetAccountId( int Index );
+	EFriendStatus				GetStatus( FAccountId AccountId );
 
 	/**
 	 * Fires when a call to RefreshFriends succeeds
 	 */
-	UPROPERTY(BlueprintAssignable, Category = "UEOS|Friends")
-		FOnFriendsRefreshed OnFriendsRefreshed;
+	UPROPERTY( BlueprintAssignable, Category = "UEOS|Friends" )
+		FOnFriendsRefreshed		OnFriendsRefreshed;
 
 	/**
 	 * Fires when a call to RefreshFriends errors
 	 */
-	UPROPERTY(BlueprintAssignable, Category = "UEOS|Friends")
-		FOnFriendsRefreshed OnRefreshFriendsError;
+	UPROPERTY( BlueprintAssignable, Category = "UEOS|Friends" )
+		FOnFriendsRefreshed		OnRefreshFriendsError;
 
 private:
-	static void QueryFriendsCallback(const EOS_Friends_QueryFriendsCallbackInfo* Data);
+
+	static void					QueryFriendsCallback( const EOS_Friends_QueryFriendsCallbackInfo* Data );
 
 	/** Handle for the Friends interface. */
-	EOS_HFriends FriendsHandle;
+	EOS_HFriends				FriendsHandle;
 };
 
