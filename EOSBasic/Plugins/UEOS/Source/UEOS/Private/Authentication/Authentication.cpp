@@ -98,6 +98,17 @@ bool UEOSAuthentication::GetAuthorised()
 	return bAuthorised;
 }
 
+bool UEOSAuthentication::GetAuthTokenCopy(EOS_Auth_Token** OutToken)
+{
+	EOS_EResult Result = EOS_Auth_CopyUserAuthToken(AuthHandle, UEOSManager::GetAuthentication()->AccountId, OutToken);
+	return Result == EOS_EResult::EOS_Success;
+}
+
+void UEOSAuthentication::ReleaseAuthToken(EOS_Auth_Token* Token)
+{
+	EOS_Auth_Token_Release( Token );
+}
+
 FString UEOSAuthentication::AccountIDToString( EOS_AccountId InAccountId )
 {
 	static char TempBuffer[EOS_ACCOUNTID_MAX_LENGTH];
@@ -119,13 +130,6 @@ void UEOSAuthentication::LoginCompleteCallback( const EOS_Auth_LoginCallbackInfo
 	if( Data->ResultCode == EOS_EResult::EOS_Success )
 	{
 		UEOSManager::GetAuthentication()->AccountId = Data->LocalUserId;
-
-		EOS_Auth_Token* UserAuthToken;
-		if( EOS_Auth_CopyUserAuthToken( AuthHandle, UEOSManager::GetAuthentication()->AccountId, &UserAuthToken ) == EOS_EResult::EOS_Success )
-		{
-			PrintAuthToken( UserAuthToken );
-			EOS_Auth_Token_Release( UserAuthToken );
-		}
 
 		const int32_t AccountsCount = EOS_Auth_GetLoggedInAccountsCount( AuthHandle );
 		for( int32_t AccountIdx = 0; AccountIdx < AccountsCount; ++AccountIdx )
@@ -204,9 +208,6 @@ void UEOSAuthentication::PrintAuthToken( EOS_Auth_Token* InAuthToken )
 	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
 	MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] - AccountId: %s" ), InAuthToken->AccountId );
 	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
-
-	MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] - AccessToken: %s" ), InAuthToken->AccessToken );
-	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
 	MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] - AccessToken: %s" ), InAuthToken->AccessToken );
 	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
 	MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] - ExpiresIn: %0.2f" ), InAuthToken->ExpiresIn );
@@ -222,6 +223,12 @@ FString FAccountId::ToString() const
 	EOS_AccountId_ToString( AccountId, TempBuffer, &TempBufferSize );
 	FString returnValue( TempBuffer );
 	return returnValue;
+}
+
+FAccountId FAccountId::FromString(const FString& AccountId)
+{
+	EOS_AccountId Account = EOS_AccountId_FromString(TCHAR_TO_ANSI(*AccountId));
+	return FAccountId(Account);
 }
 
 FAccountId::operator bool() const

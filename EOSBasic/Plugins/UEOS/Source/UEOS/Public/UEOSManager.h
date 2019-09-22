@@ -11,6 +11,8 @@
 // Forward Declarations
 class UEOSAuthentication;
 class UEOSMetrics;
+class UEOSFriends;
+class UEOSUserInfo;
 
 
 UCLASS()
@@ -81,6 +83,22 @@ public:
 		static UEOSMetrics*						GetMetrics();
 
 	/**
+	 * Attempts to return the current Friends object.
+	 *
+	 * @return UEOSFriends* The current Friends object, or nullptr if not valid.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "UEOS|Manager")
+		static UEOSFriends* GetFriends();
+
+	/**
+	 * Attempts to return the current UserInfo object.
+	 *
+	 * @return UEOSUserInfo* The current UserInfo object, or nullptr if not valid.
+	 */
+	UFUNCTION(BlueprintCallable, Category = "UEOS|Manager")
+		static UEOSUserInfo* GetUserInfo();
+
+	/**
 	* Utility to return an EOS Result as a FString.
 	*
 	* @param Result The EOS Result to attempt to convert.
@@ -88,95 +106,106 @@ public:
 	*/
 	static FString								EOSResultToString( EOS_EResult Result );
 
+
+	/// CONFIG GETTERS
+
 	/**
 	* Returns the ProductID used in this project.
 	*
 	* @return FString The ProductID that passed to EOS for this Project.
 	*/
-	UFUNCTION(BlueprintPure, Category = "UEOS", meta = (Keywords = "Get Product Id"))
-		static FString								GetProductId() { return GetMutableDefault<UEOSConfig>()->ProductId; }
+	UFUNCTION( BlueprintPure, Category = "UEOS", meta = ( Keywords = "Get Product Id" ) )
+		static FString							GetProductId();
 
 	/**
 	* Returns the SandboxID used in this project.
 	*
 	* @return FString The SandboxID that passed to EOS for this Project.
 	*/
-	UFUNCTION(BlueprintPure, Category = "UEOS", meta = (Keywords = "Get Sandbox Id"))
-		static FString								GetSandboxId() { return GetMutableDefault<UEOSConfig>()->SandboxId; }
+	UFUNCTION( BlueprintPure, Category = "UEOS", meta = ( Keywords = "Get Sandbox Id" ) )
+		static FString							GetSandboxId();
 
 	/**
 	* Returns the Support Ticketing authentication key used in this project.
 	*
 	* @return FString The authentication key that is passed to the support ticket mailbox.
 	*/
-	UFUNCTION(BlueprintPure, Category = "UEOS", meta = (Keywords = "Get Support Ticketing Key"))
-		static FString								GetSupportTicketingKey() { return GetMutableDefault<UEOSConfig>()->SupportTicketingKey; }
+	UFUNCTION( BlueprintPure, Category = "UEOS", meta = ( Keywords = "Get Support Ticketing Key" ) )
+		static FString							GetSupportTicketingKey();
 
 	/**
 	* Returns the The URL to send EOS support tickets to.
 	*
 	* @return FString The URL that is used to send support tickets.
 	*/
-	UFUNCTION(BlueprintPure, Category = "UEOS", meta = (Keywords = "Get Support Ticketing URL"))
-		static FString								GetSupportTicketingURL() { return GetMutableDefault<UEOSConfig>()->SupportTicketingURL; }
+	UFUNCTION( BlueprintPure, Category = "UEOS", meta = ( Keywords = "Get Support Ticketing URL" ) )
+		static FString							GetSupportTicketingURL();
 
 	/**
 	* Returns the ClientID used in this project.
 	*
 	* @return FString The ClientID that passed to EOS for this Project.
 	*/
-	UFUNCTION(BlueprintPure, Category = "UEOS", meta = (Keywords = "Get Client Id"))
-		static FString								GetClientId() { return GetMutableDefault<UEOSConfig>()->ClientId; }
+	UFUNCTION( BlueprintPure, Category = "UEOS", meta = ( Keywords = "Get Client Id" ) )
+		static FString							GetClientId();
 
 	/**
 	* Returns the ClientSecret used in this project.
 	*
 	* @return FString The ClientSecret that passed to EOS for this Project.
 	*/
-	UFUNCTION(BlueprintPure, Category = "UEOS", meta = (Keywords = "Get Client Secret"))
-		static FString								GetClientSecret() { return GetMutableDefault<UEOSConfig>()->ClientSecret; }
+	UFUNCTION( BlueprintPure, Category = "UEOS", meta = ( Keywords = "Get Client Secret" ) )
+		static FString							GetClientSecret();
+
+	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
+		EEOSResults					  			InitEOS();
+
+	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
+		EEOSResults						  		ShutdownEOS();
+
+	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
+		bool							       		UpdateEOS();
 
 protected:
-
-	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
-		EEOSResults								InitEOS();
-
-	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
-		EEOSResults								ShutdownEOS();
-
-	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
-		bool									UpdateEOS();
 
 	// --------------------------------------------------------------
 	// STATIC PROPERTIES
 	// --------------------------------------------------------------
 
 	/** The singleton UEOSManager instance. */
-	static UEOSManager*							EOSManager;
+	static UEOSManager*						EOSManager;
 
 	// --------------------------------------------------------------
 	// INSTANCE PROPERTIES
 	// --------------------------------------------------------------
 
 	/** The EOS Platform Handle for Platform operations. */
-	EOS_HPlatform								PlatformHandle;
+	EOS_HPlatform							  	PlatformHandle;
 
 	/** Whether the EOS System has been initialized. */
 	UPROPERTY()
-		bool									bEOSInitialized;
+		bool								      	bEOSInitialized;
 
 	/** Whether the EOS System has been Shutdown.  If it has, it CANNOT be reinitialized without a full
 	 * application restart, as any further calls would result in undefined behaviour. */
 	UPROPERTY()
-		bool									bEOSShutdown;
+		bool								      	bEOSShutdown;
 
 	/** The current Authentication object. */
 	UPROPERTY()
-		UEOSAuthentication*						Authentication;
+		UEOSAuthentication*					Authentication;
 
 	/** The current Metric object. */
 	UPROPERTY()
-		UEOSMetrics*							Metrics;
+		UEOSMetrics*				  		  Metrics;
+
+	/** The current Friends object. */
+	UPROPERTY()
+		UEOSFriends*               Friends;
+
+	/** The current UserInfo object. */
+	UPROPERTY()
+		UEOSUserInfo*              UserInfo;
 
 private:
 

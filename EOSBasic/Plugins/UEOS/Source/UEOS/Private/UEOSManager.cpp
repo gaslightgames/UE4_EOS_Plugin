@@ -18,6 +18,8 @@ UEOSManager::UEOSManager()
 	, bEOSShutdown( false )
 	, Authentication( nullptr )
 	, Metrics( nullptr )
+	, Friends( nullptr )
+	, UserInfo( nullptr )
 {
 	
 }
@@ -304,6 +306,40 @@ UEOSMetrics* UEOSManager::GetMetrics()
 	return UEOSManager::EOSManager->Metrics;
 }
 
+UEOSFriends* UEOSManager::GetFriends()
+{
+	if( UEOSManager::EOSManager->Friends == nullptr )
+	{
+		UEOSManager::EOSManager->Friends = NewObject<UEOSFriends>( UEOSManager::EOSManager );
+	}
+
+	if( UEOSManager::EOSManager->Friends == nullptr )
+	{
+		// Failed to instantiate the Friends object.
+		FString MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Failed to create Friends Object." ) );
+		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+	}
+
+	return UEOSManager::EOSManager->Friends;
+}
+
+UEOSUserInfo* UEOSManager::GetUserInfo()
+{
+	if( UEOSManager::EOSManager->UserInfo == nullptr )
+	{
+		UEOSManager::EOSManager->UserInfo = NewObject<UEOSUserInfo>( UEOSManager::EOSManager );
+	}
+
+	if( UEOSManager::EOSManager->UserInfo == nullptr )
+	{
+		// Failed to instantiate the UserInfo object.
+		FString MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Failed to create UserInfo Object." ) );
+		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+	}
+
+	return UEOSManager::EOSManager->UserInfo;
+}
+
 FString UEOSManager::EOSResultToString( EOS_EResult Result )
 {
 	switch( Result )
@@ -457,4 +493,88 @@ void UEOSManager::EOSSDKLoggingCallback( const EOS_LogMessage* InMsg )
 {
 	FString Message( InMsg->Message );
 	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *Message );
+}
+
+FString UEOSManager::GetProductId()
+{
+	FString retVal = "";
+
+	UEOSConfig* EOSConfig = GetMutableDefault<UEOSConfig>();
+
+	if( EOSConfig != nullptr )
+	{
+		retVal = EOSConfig->ProductId;
+	}
+
+	return retVal;
+}
+
+FString UEOSManager::GetSandboxId()
+{
+	FString retVal = "";
+
+	UEOSConfig* EOSConfig = GetMutableDefault<UEOSConfig>();
+
+	if( EOSConfig != nullptr )
+	{
+		retVal = EOSConfig->SandboxId;
+	}
+
+	return retVal;
+}
+
+FString UEOSManager::GetSupportTicketingKey()
+{
+	FString retVal = "";
+
+	UEOSConfig* EOSConfig = GetMutableDefault<UEOSConfig>();
+
+	if( EOSConfig != nullptr )
+	{
+		retVal = EOSConfig->SupportTicketingKey;
+	}
+
+	return retVal;
+}
+
+FString UEOSManager::GetSupportTicketingURL()
+{
+	FString retVal = "";
+
+	UEOSConfig* EOSConfig = GetMutableDefault<UEOSConfig>();
+
+	if( EOSConfig != nullptr )
+	{
+		retVal = EOSConfig->SupportTicketingURL;
+	}
+
+	return retVal;
+}
+
+FString UEOSManager::GetClientId()
+{
+	FString retVal = "";
+
+	UEOSConfig* EOSConfig = GetMutableDefault<UEOSConfig>();
+
+	if( EOSConfig != nullptr )
+	{
+		retVal = EOSConfig->ClientId;
+	}
+
+	return retVal;
+}
+
+FString UEOSManager::GetClientSecret()
+{
+	FString retVal = "";
+
+	UEOSConfig* EOSConfig = GetMutableDefault<UEOSConfig>();
+
+	if( EOSConfig != nullptr )
+	{
+		retVal = EOSConfig->ClientSecret;
+	}
+
+	return retVal;
 }
