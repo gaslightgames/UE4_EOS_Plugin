@@ -4,6 +4,7 @@
 
 // EOS Includes
 #include "UEOSCommon.h"
+#include "Config/UEOSConfig.h"
 
 #include "UEOSManager.generated.h"
 
@@ -105,6 +106,7 @@ public:
 	*/
 	static FString								EOSResultToString( EOS_EResult Result );
 
+
 	/// CONFIG GETTERS
 
 	/**
@@ -156,13 +158,13 @@ public:
 		static FString							GetClientSecret();
 
 	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
-		EEOSResults								InitEOS();
+		EEOSResults					  			InitEOS();
 
 	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
-		EEOSResults								ShutdownEOS();
+		EEOSResults						  		ShutdownEOS();
 
 	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
-		bool									UpdateEOS();
+		bool							       		UpdateEOS();
 
 protected:
 
@@ -171,39 +173,39 @@ protected:
 	// --------------------------------------------------------------
 
 	/** The singleton UEOSManager instance. */
-	static UEOSManager*							EOSManager;
+	static UEOSManager*						EOSManager;
 
 	// --------------------------------------------------------------
 	// INSTANCE PROPERTIES
 	// --------------------------------------------------------------
 
 	/** The EOS Platform Handle for Platform operations. */
-	EOS_HPlatform								PlatformHandle;
+	EOS_HPlatform							  	PlatformHandle;
 
 	/** Whether the EOS System has been initialized. */
 	UPROPERTY()
-		bool									bEOSInitialized;
+		bool								      	bEOSInitialized;
 
 	/** Whether the EOS System has been Shutdown.  If it has, it CANNOT be reinitialized without a full
 	 * application restart, as any further calls would result in undefined behaviour. */
 	UPROPERTY()
-		bool									bEOSShutdown;
+		bool								      	bEOSShutdown;
 
 	/** The current Authentication object. */
 	UPROPERTY()
-		UEOSAuthentication*						Authentication;
+		UEOSAuthentication*					Authentication;
 
 	/** The current Metric object. */
 	UPROPERTY()
-		UEOSMetrics*							Metrics;
+		UEOSMetrics*				  		  Metrics;
 
 	/** The current Friends object. */
 	UPROPERTY()
-		UEOSFriends* Friends;
+		UEOSFriends*               Friends;
 
 	/** The current UserInfo object. */
 	UPROPERTY()
-		UEOSUserInfo* UserInfo;
+		UEOSUserInfo*              UserInfo;
 
 private:
 
