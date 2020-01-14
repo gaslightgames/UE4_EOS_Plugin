@@ -8,6 +8,7 @@
 // EOS Includes
 #include "eos_sdk.h"
 #include "eos_auth.h"
+#include "eos_version.h"
 
 #include "Authentication.generated.h"
 
@@ -41,7 +42,7 @@ struct UEOS_API FAccountId
 	/**
 	* Construct wrapper from account id.
 	*/
-	FAccountId( EOS_AccountId InAccountId )
+	FAccountId( EOS_EpicAccountId InAccountId )
 		: AccountId( InAccountId )
 	{
 	};
@@ -70,7 +71,7 @@ struct UEOS_API FAccountId
 	/**
 	* Easy conversion to EOS account ID.
 	*/
-	operator EOS_AccountId() const
+	operator EOS_EpicAccountId() const
 	{
 		return AccountId;
 	}
@@ -89,7 +90,7 @@ struct UEOS_API FAccountId
 	static FAccountId		FromString( const FString& AccountId );
 
 	/** The EOS SDK matching Account Id. */
-	EOS_AccountId			AccountId;
+	EOS_EpicAccountId			AccountId;
 };
 
 UCLASS()
@@ -154,7 +155,7 @@ public:
 	* @param InAccountId - Account id to convert
 	* @return FString representing the account ID.
 	*/
-	static FString					AccountIDToString( EOS_AccountId InAccountId );
+	static FString					AccountIDToString( EOS_EpicAccountId InAccountId );
 
 	/**
 	* Fires when a User Has Logged In.
