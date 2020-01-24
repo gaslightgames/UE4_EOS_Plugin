@@ -10,8 +10,8 @@ If you download and run the sample project, you will need to:
 - Add the ProductId, SandboxId and DeploymentId's to the Settings in Project Settings -> UEOS
 
 In the sample, within the Player Controller, there are several input events connected to simple actions.
-E will attempt to initialise the EOS SDK, passing your parameters.
-S will attempt to shutdown the EOS SDK.
+- E will attempt to initialise the EOS SDK, passing your parameters.
+- S will attempt to shutdown the EOS SDK.
 
 (Obviously you will want/need to move this to something more appropriate for your project.)
 
