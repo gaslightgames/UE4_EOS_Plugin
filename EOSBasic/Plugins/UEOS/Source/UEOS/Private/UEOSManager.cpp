@@ -1,4 +1,4 @@
-// Copyright (C) Gaslight Games Ltd, 2019
+// Copyright (C) Gaslight Games Ltd, 2019-2020
 
 #include "UEOSManager.h"
 
@@ -102,6 +102,8 @@ EEOSResults UEOSManager::InitEOS()
 	SDKOptions.ReleaseMemoryFunction = nullptr;
 	SDKOptions.ProductName = ProductName.c_str();
 	SDKOptions.ProductVersion = ProductVersion.c_str();
+	SDKOptions.Reserved = nullptr;
+	SDKOptions.SystemInitializeOptions = nullptr;
 
 	EOS_EResult InitResult = EOS_Initialize( &SDKOptions );
 	FString MessageText;
@@ -120,6 +122,15 @@ EEOSResults UEOSManager::InitEOS()
 	// Create platform instance
 	EOS_Platform_Options PlatformOptions;
 	PlatformOptions.ApiVersion = EOS_PLATFORM_OPTIONS_API_LATEST;
+	PlatformOptions.EncryptionKey = nullptr;
+	PlatformOptions.OverrideCountryCode = nullptr;
+	PlatformOptions.OverrideLocaleCode = nullptr;
+	static std::string EncryptionKey( 64, '1' );
+	PlatformOptions.EncryptionKey = EncryptionKey.c_str();
+	PlatformOptions.Flags = 0;
+	PlatformOptions.CacheDirectory = "/Temp/";	// Trying to create a relative Temp directory
+
+	bool bHasInvalidParams = false;
 
 	if( EOSConfig != nullptr )
 	{
@@ -127,28 +138,47 @@ EEOSResults UEOSManager::InitEOS()
 
 		std::string ProductId = TCHAR_TO_UTF8( *EOSConfig->ProductId );
 		std::string SandboxId = TCHAR_TO_UTF8( *EOSConfig->SandboxId );
+		std::string DeploymentId = TCHAR_TO_UTF8( *EOSConfig->DeploymentId );
+
+		if( ProductId.empty() )
+		{
+			MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] ProductId is invalid." ) );
+			UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+
+			bHasInvalidParams = true;
+		}
+
+		if( SandboxId.empty() )
+		{
+			MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] SandboxId is invalid." ) );
+			UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+
+			bHasInvalidParams = true;
+		}
+
+		if( DeploymentId.empty() )
+		{
+			MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] DeploymentId is invalid." ) );
+			UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+
+			bHasInvalidParams = true;
+		}
 
 		PlatformOptions.ProductId = ProductId.c_str();
 		PlatformOptions.SandboxId = SandboxId.c_str();
+		PlatformOptions.DeploymentId = DeploymentId.c_str();
 		
 		std::string ClientId = TCHAR_TO_UTF8( *EOSConfig->ClientId );
 		std::string ClientSecret = TCHAR_TO_UTF8( *EOSConfig->ClientSecret );
 
 		PlatformOptions.ClientCredentials.ClientId = ( EOSConfig->ClientId.IsEmpty() ) ? nullptr : ClientId.c_str();
 		PlatformOptions.ClientCredentials.ClientSecret = ( EOSConfig->ClientSecret.IsEmpty() ) ? nullptr : ClientSecret.c_str();
-
-		if( EOSConfig->bAllowReservedPlatforms )
-		{
-			// Taken from the Sample, but this function and it's include could not be found.
-			// Left for posterity, but defaulting to NULL (as is used in the Epic sample).
-			//SetReservedPlatformOptions( PlatformOptions );
-			PlatformOptions.Reserved = NULL;
-		}
-		else
-		{
-			PlatformOptions.Reserved = NULL;
-		}
 		
+		if( bHasInvalidParams == true )
+		{
+			return EEOSResults::ER_MissingParameters;
+		}
+
 		PlatformHandle = EOS_Platform_Create( &PlatformOptions );
 	}
 

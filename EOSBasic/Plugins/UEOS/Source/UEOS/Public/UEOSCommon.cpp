@@ -1,4 +1,4 @@
-// Copyright (C) Gaslight Games Ltd, 2019
+// Copyright (C) Gaslight Games Ltd, 2019-2020
 
 #include "UEOSCommon.h"
 

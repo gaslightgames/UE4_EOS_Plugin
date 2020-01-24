@@ -1,4 +1,4 @@
-// Copyright (C) Gaslight Games Ltd, 2019
+// Copyright (C) Gaslight Games Ltd, 2019-2020
 
 #include "Public/Config/UEOSConfig.h"
 
@@ -7,10 +7,10 @@ UEOSConfig::UEOSConfig()
 	, ProductVersion( "1.0" )
 	, ProductId( "" )
 	, SandboxId( "" )
+	, DeploymentId( "" )
 	, ClientId( "" )
 	, ClientSecret( "" )
 	, bIsServer( false )
-	, bAllowReservedPlatforms( false )
 	, LogLevel( ELogLevel::LL_VeryVerbose )
 {
 

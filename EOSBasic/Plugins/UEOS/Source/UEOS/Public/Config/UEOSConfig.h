@@ -1,4 +1,4 @@
-// Copyright (C) Gaslight Games Ltd, 2019
+// Copyright (C) Gaslight Games Ltd, 2019-2020
 
 #pragma once
 
@@ -50,6 +50,10 @@ public:
 	UPROPERTY( config, EditAnywhere, Category = "UEOS" )
 		FString		SandboxId;
 
+	/** The DeploymentId to pass to EOS for this Project. */
+	UPROPERTY( config, EditAnywhere, Category = "UEOS" )
+		FString		DeploymentId;
+
 	/** The authentication key to pass to the support ticket mailbox. */
 	UPROPERTY( config, EditAnywhere, Category = "UEOS" )
 		FString		SupportTicketingKey;
@@ -69,10 +73,6 @@ public:
 	/** Whether this EOS instance is a Server or not.  Defaults to false. */
 	UPROPERTY( config, EditAnywhere, Category = "UEOS" )
 		bool		bIsServer;
-
-	/** Whether to allow reserved platforms.  Defaults to false. */
-	UPROPERTY( config, EditAnywhere, Category = "UEOS" )
-		bool		bAllowReservedPlatforms;
 
 	/** The Log Level.  Defaults to Very Verbose. */
 	UPROPERTY( config, EditAnywhere, BlueprintReadWrite, Category = "UEOS" )
