@@ -28,11 +28,21 @@ public:
 	UEOSManager();
 
 	/**
+	* Request the EOS Manager.
+	* EOS cannot run within PIE (Play-in-Editor). Ensure to check the
+	* boolean flag before trying to access the EOS Manager object.
+	*
+	* @param ActiveEOSManager The current instance of the EOS Manager.
+	* @return bool True if the Manager has been returned, otherwise false.
+	*/
+	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager", meta = ( WorldContext = WorldContextObject ) )
+		static bool								RequestEOSManager( UEOSManager*& ActiveEOSManager, UObject* WorldContextObject );
+
+	/**
 	* Use this class as a Singleton and thus, returns the current instance.
 	* @return UEOSManager The singleton active instance.
 	*/
-	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
-		static UEOSManager*						GetEOSManager();
+	static UEOSManager*							GetEOSManager();
 
 	/**
 	* Cleans up all content within the Singleton.

@@ -1,5 +1,6 @@
 // Copyright (C) Gaslight Games Ltd, 2019-2020
 
+// EOS Includes
 #include "UEOSManager.h"
 
 #include "Config/UEOSConfig.h"
@@ -10,6 +11,10 @@
 
 #include "UEOSModule.h"
 
+// UE4 Includes
+#include "Engine/Engine.h"
+
+// STD Includes
 #include <string>
 
 // Static Initialization
@@ -25,6 +30,24 @@ UEOSManager::UEOSManager()
 	, UserInfo( nullptr )
 {
 	
+}
+
+bool UEOSManager::RequestEOSManager( UEOSManager*& ActiveEOSManager, UObject* WorldContextObject )
+{
+	UWorld* World = GEngine->GetWorldFromContextObjectChecked( WorldContextObject );
+	if( World != nullptr )
+	{
+		if( World->WorldType == EWorldType::PIE )
+		{
+			FString MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] EOS Cannot be run whilst in PIE. Use Standalone or Debug from Visual Studio." ) );
+			UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+
+			return false;
+		}
+	}
+
+	ActiveEOSManager = UEOSManager::GetEOSManager();
+	return true;
 }
 
 UEOSManager* UEOSManager::GetEOSManager()
