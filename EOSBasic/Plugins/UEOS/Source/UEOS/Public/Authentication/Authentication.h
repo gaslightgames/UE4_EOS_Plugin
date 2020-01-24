@@ -79,7 +79,7 @@ struct UEOS_API FAccountId
 	/**
 	* Prints out account ID as hex.
 	*/
-	FString					ToString() const;
+	FString						ToString() const;
 
 	/** 
 	* Returns an Account ID from a String interpretation of one.
@@ -87,7 +87,7 @@ struct UEOS_API FAccountId
 	* @param AccountId the FString representation of an Account ID.
 	* @return FAccountId An Account ID from the string, if valid.
 	*/
-	static FAccountId		FromString( const FString& AccountId );
+	static FAccountId			FromString( const FString& AccountId );
 
 	/** The EOS SDK matching Account Id. */
 	EOS_EpicAccountId			AccountId;
@@ -120,12 +120,6 @@ public:
 	*/
 	UFUNCTION( BlueprintCallable, Category = "UEOS|Authentication" )
 		void						Logout();
-
-	/**
-	* Updates main tick for EOS SDK
-	*/
-	UFUNCTION( BlueprintCallable, Category = "UEOS|Authentication" )
-		void						Update();
 
 	/**
 	* Whether this Account has been authorised.

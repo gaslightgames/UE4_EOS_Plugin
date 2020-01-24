@@ -7,6 +7,8 @@
 
 #include <string>
 
+#define PRODUCT_ON_EGS 0
+
 UEOSAuthentication::UEOSAuthentication()
 	: AuthHandle( NULL )
 	, AccountId()
@@ -19,6 +21,7 @@ void UEOSAuthentication::Login( ELoginMode LoginMode, FString UserId, FString Us
 {
 	FString	MessageText;
 
+#if PRODUCT_ON_EGS
 	if( !UEOSManager::IsEOSInitialized() )
 	{
 		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Can't Log In - EOS SDK Not Initialized!." ) );
@@ -27,6 +30,13 @@ void UEOSAuthentication::Login( ELoginMode LoginMode, FString UserId, FString Us
 	}
 
 	AuthHandle = EOS_Platform_GetAuthInterface( UEOSManager::GetEOSManager()->GetPlatformHandle() );
+
+	if( AuthHandle == nullptr )
+	{
+		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Can't Log In - Failed to get Authentication Handle." ) );
+		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+		return;
+	}
 
 	EOS_Auth_Credentials Credentials;
 	Credentials.ApiVersion = EOS_AUTH_CREDENTIALS_API_LATEST;
@@ -63,11 +73,11 @@ void UEOSAuthentication::Login( ELoginMode LoginMode, FString UserId, FString Us
 		}
 		case ELoginMode::LM_DevTool:
 		{
-			MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In with Dev Auth Tool." ) );
+			MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In with Dev Auth Tool | ID: %s | Token: %s." ), *UserId, *UserToken );
 			UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
-			Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_Developer;
 			Credentials.Id = TCHAR_TO_UTF8( *UserId );
 			Credentials.Token = TCHAR_TO_UTF8( *UserToken );
+			Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_Developer;
 
 			break;
 		}
@@ -76,11 +86,18 @@ void UEOSAuthentication::Login( ELoginMode LoginMode, FString UserId, FString Us
 	LoginOptions.Credentials = &Credentials;
 
 	EOS_Auth_Login( AuthHandle, &LoginOptions, NULL, LoginCompleteCallback );
+#else
+	MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Account Auth, Login & Logout are ONLY available on EGS. Change PRODUCT_ON_EGS to 1 to use." ) );
+	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+#endif
 }
 
 void UEOSAuthentication::Logout()
 {
-	FString MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging Out..." ) );
+	FString	MessageText;
+
+#if PRODUCT_ON_EGS
+	MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging Out..." ) );
 	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
 
 	EOS_Auth_LogoutOptions LogoutOptions;
@@ -88,11 +105,10 @@ void UEOSAuthentication::Logout()
 	LogoutOptions.LocalUserId = AccountId;
 
 	EOS_Auth_Logout( AuthHandle, &LogoutOptions, NULL, LogoutCompleteCallback );
-}
-
-void UEOSAuthentication::Update()
-{
-	EOS_Platform_Tick( UEOSManager::GetEOSManager()->GetPlatformHandle() );
+#else
+	MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Account Auth, Login & Logout are ONLY available on EGS. Change PRODUCT_ON_EGS to 1 to use." ) );
+	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+#endif
 }
 
 bool UEOSAuthentication::GetAuthorised()
@@ -116,10 +132,27 @@ void UEOSAuthentication::ReleaseAuthToken( EOS_Auth_Token* Token )
 
 FString UEOSAuthentication::AccountIDToString( EOS_EpicAccountId InAccountId )
 {
+	FString returnValue( "ERROR" );
+
+	if( InAccountId == nullptr )
+	{
+		returnValue = "NULL";
+		return returnValue;
+	}
+
 	static char TempBuffer[EOS_EPICACCOUNTID_MAX_LENGTH];
 	int32_t TempBufferSize = sizeof( TempBuffer );
-	EOS_EpicAccountId_ToString( InAccountId, TempBuffer, &TempBufferSize );
-	FString returnValue( TempBuffer );
+	EOS_EResult Result = EOS_EpicAccountId_ToString( InAccountId, TempBuffer, &TempBufferSize );
+
+	if( Result == EOS_EResult::EOS_Success )
+	{
+		returnValue = TempBuffer;
+		return returnValue;
+	}
+
+	FString MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Epic Account Id To String Error: " ), *UEOSManager::EOSResultToString( Result ) );
+	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+
 	return returnValue;
 }
 
