@@ -5,9 +5,9 @@ This plugin does not include the EOS (Epic Online Services) SDK.  You will have 
 Make sure to right click the .uproject, Generate Visual Studio files and compile.
 
 If you download and run the sample project, you will need to:
-- Have registered your project on the EOS site
-- Retrieved your ProductId and SandboxId
-- Add the ProductId and SandboxId's to the Settings in Project Settings -> UEOS
+- Have registered your project on the EOS site (Dev Portal)
+- Retrieved your ProductId, SandboxId and DepolymentId
+- Add the ProductId, SandboxId and DeploymentId's to the Settings in Project Settings -> UEOS
 
 In the sample, within the Player Controller, there are several input events connected to simple actions.
 E will attempt to initialise the EOS SDK, passing your parameters.
@@ -16,9 +16,13 @@ S will attempt to shutdown the EOS SDK.
 (Obviously you will want/need to move this to something more appropriate for your project.)
 
 Once you have the SDK initialized, then you can use:
-B will initialize a Metric.
-N will attempt to Begin a Player Session.
-M will attempt to End a Player Session.
+- B will initialize a Metric.
+- N will attempt to Begin a Player Session.
+- M will attempt to End a Player Session.
+
+The options for Account Login/Logout will **ONLY** work if your Project is on the Epic Store, or an Epic Store Partner. The same goes for running the Developer Authentication Tool.
+- ~~I will attempt to Login~~
+- ~~O will attempt to Logout (will only work if a successful Login occurred first)~~
 
 The project, blueprint nodes and comments have more direct usage information.
 
