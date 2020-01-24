@@ -55,7 +55,7 @@ FAccountId UEOSFriends::GetAccountId( int Index )
 	Options.ApiVersion = EOS_FRIENDS_GETFRIENDATINDEX_API_LATEST;
 	Options.LocalUserId = UEOSManager::GetEOSManager()->GetAuthentication()->GetAccountId();
 	Options.Index = Index;
-	EOS_AccountId AccountId = EOS_Friends_GetFriendAtIndex( FriendsHandle, &Options );
+	EOS_EpicAccountId AccountId = EOS_Friends_GetFriendAtIndex( FriendsHandle, &Options );
 	return AccountId;
 }
 
