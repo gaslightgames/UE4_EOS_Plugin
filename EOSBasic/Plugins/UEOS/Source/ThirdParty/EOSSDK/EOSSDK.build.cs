@@ -1,4 +1,4 @@
-// (C) Gaslight Games Ltd, 2017-2019.  All rights reserved.
+// (C) Gaslight Games Ltd, 2019-2020.  All rights reserved.
 
 using System.IO;
 using UnrealBuildTool;
@@ -21,7 +21,6 @@ public class EOSSDK : ModuleRules
             PublicIncludePaths.Add( Path.Combine( BaseDirectory, "Include" ) );
 
             // Add the import library
-            PublicLibraryPaths.Add( Path.Combine( BaseDirectory, "Lib" ) );
             PublicAdditionalLibraries.Add( Path.Combine( BaseDirectory, "Lib", "EOSSDK-Win64-Shipping.lib" ) );
 
             // Dlls
@@ -35,7 +34,6 @@ public class EOSSDK : ModuleRules
             PublicIncludePaths.Add( Path.Combine( BaseDirectory, "Include" ) );
 
             // Add the import library
-            PublicLibraryPaths.Add( Path.Combine( BaseDirectory, "Lib" ) );
             PublicAdditionalLibraries.Add( Path.Combine( BaseDirectory, "Lib", "EOSSDK-Win32-Shipping.lib" ) );
 
             // Dlls
@@ -48,7 +46,6 @@ public class EOSSDK : ModuleRules
             PublicIncludePaths.Add( Path.Combine( BaseDirectory, "Include" ) );
 
             // Add the import library
-            PublicLibraryPaths.Add( Path.Combine( BaseDirectory, "Bin" ) );
             PublicAdditionalLibraries.Add( Path.Combine( BaseDirectory, "Bin", "libEOSSDK-Linux-Shipping.so" ) );
             RuntimeDependencies.Add( Path.Combine( BaseDirectory, "Bin", "libEOSSDK-Linux-Shipping.so" ) );
         }
@@ -58,7 +55,6 @@ public class EOSSDK : ModuleRules
             PublicIncludePaths.Add( Path.Combine( BaseDirectory, "Include" ) );
 
             // Add the import library
-            PublicLibraryPaths.Add( Path.Combine( BaseDirectory, "Bin" ) );
             PublicAdditionalLibraries.Add( Path.Combine( BaseDirectory, "Bin", "EOSSDK-Mac-Shipping.dylib" ) );
             RuntimeDependencies.Add( Path.Combine( BaseDirectory, "Bin", "EOSSDK-Mac-Shipping.dylib" ) );
         }

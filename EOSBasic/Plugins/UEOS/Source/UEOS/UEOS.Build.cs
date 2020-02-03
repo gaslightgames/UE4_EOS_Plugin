@@ -1,4 +1,4 @@
-// (C) Gaslight Games Ltd, 2019.  All rights reserved.
+// (C) Gaslight Games Ltd, 2019-2020.  All rights reserved.
 
 using UnrealBuildTool;
 using System.IO;

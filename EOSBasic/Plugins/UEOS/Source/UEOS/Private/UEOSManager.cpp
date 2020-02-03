@@ -17,6 +17,8 @@
 // STD Includes
 #include <string>
 
+#define ALLOW_EOS_IN_PIE 0
+
 // Static Initialization
 UEOSManager* UEOSManager::EOSManager = nullptr;
 
@@ -34,6 +36,7 @@ UEOSManager::UEOSManager()
 
 bool UEOSManager::RequestEOSManager( UEOSManager*& ActiveEOSManager, UObject* WorldContextObject )
 {
+#if !ALLOW_EOS_IN_PIE
 	UWorld* World = GEngine->GetWorldFromContextObjectChecked( WorldContextObject );
 	if( World != nullptr )
 	{
@@ -45,6 +48,7 @@ bool UEOSManager::RequestEOSManager( UEOSManager*& ActiveEOSManager, UObject* Wo
 			return false;
 		}
 	}
+#endif
 
 	ActiveEOSManager = UEOSManager::GetEOSManager();
 	return true;
@@ -145,13 +149,14 @@ EEOSResults UEOSManager::InitEOS()
 	// Create platform instance
 	EOS_Platform_Options PlatformOptions;
 	PlatformOptions.ApiVersion = EOS_PLATFORM_OPTIONS_API_LATEST;
+	PlatformOptions.bIsServer = EOS_FALSE;
 	PlatformOptions.EncryptionKey = nullptr;
 	PlatformOptions.OverrideCountryCode = nullptr;
 	PlatformOptions.OverrideLocaleCode = nullptr;
-	static std::string EncryptionKey( 64, '1' );
-	PlatformOptions.EncryptionKey = EncryptionKey.c_str();
-	PlatformOptions.Flags = 0;
-	PlatformOptions.CacheDirectory = "/Temp/";	// Trying to create a relative Temp directory
+	//static std::string EncryptionKey( 64, '1' );
+	//PlatformOptions.EncryptionKey = EncryptionKey.c_str();
+	//PlatformOptions.Flags = 0;
+	//PlatformOptions.CacheDirectory = "/Temp/";	// Trying to create a relative Temp directory
 
 	bool bHasInvalidParams = false;
 
