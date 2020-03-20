@@ -2,17 +2,25 @@
 
 // EOS Includes
 #include "UEOSManager.h"
-
 #include "Config/UEOSConfig.h"
 #include "Authentication/Authentication.h"
 #include "Metrics/Metrics.h"
 #include "UserInfo/UserInfo.h"
 #include "Friends/Friends.h"
-
 #include "UEOSModule.h"
+
+// EOS SDK Includes
+#define ALLOW_RESERVED_PLATFORM_OPTIONS 0
+#if ALLOW_RESERVED_PLATFORM_OPTIONS
+#include "ReservedPlatformOptions.h"
+#endif
 
 // UE4 Includes
 #include "Engine/Engine.h"
+#include "Misc/Paths.h"
+#include "GenericPlatform/GenericPlatformFile.h"
+#include "HAL/PlatformFilemanager.h"
+#include "HAL/PlatformFile.h"
 
 // STD Includes
 #include <string>
@@ -112,6 +120,7 @@ EEOSResults UEOSManager::InitEOS()
 
 	UEOSConfig* EOSConfig = GetMutableDefault<UEOSConfig>();
 
+	// Defaults - if none are set in the Config.
 	std::string ProductName = "UEOS Plugin";
 	std::string ProductVersion = "0.3";
 
@@ -153,10 +162,23 @@ EEOSResults UEOSManager::InitEOS()
 	PlatformOptions.EncryptionKey = nullptr;
 	PlatformOptions.OverrideCountryCode = nullptr;
 	PlatformOptions.OverrideLocaleCode = nullptr;
-	//static std::string EncryptionKey( 64, '1' );
-	//PlatformOptions.EncryptionKey = EncryptionKey.c_str();
-	//PlatformOptions.Flags = 0;
-	//PlatformOptions.CacheDirectory = "/Temp/";	// Trying to create a relative Temp directory
+	static std::string EncryptionKey( 64, '1' );
+	PlatformOptions.EncryptionKey = EncryptionKey.c_str();
+	PlatformOptions.Flags = 0;
+
+	FString TempPath = FPaths::ConvertRelativePathToFull( FPaths::ProjectSavedDir() + "/Temp/" );
+	if( FPlatformFileManager::Get().GetPlatformFile().DirectoryExists( *TempPath ) == false )
+	{
+		if( FPlatformFileManager::Get().GetPlatformFile().CreateDirectoryTree( *TempPath ) == false )
+		{
+			MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Failed to create Cache Directory: %s." ), *TempPath );
+			UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+
+			return EEOSResults::ER_InvalidParameters;
+		}
+	}
+
+	PlatformOptions.CacheDirectory = TCHAR_TO_UTF8( *TempPath );
 
 	bool bHasInvalidParams = false;
 
@@ -202,6 +224,12 @@ EEOSResults UEOSManager::InitEOS()
 		PlatformOptions.ClientCredentials.ClientId = ( EOSConfig->ClientId.IsEmpty() ) ? nullptr : ClientId.c_str();
 		PlatformOptions.ClientCredentials.ClientSecret = ( EOSConfig->ClientSecret.IsEmpty() ) ? nullptr : ClientSecret.c_str();
 		
+#if ALLOW_RESERVED_PLATFORM_OPTIONS
+		SetReservedPlatformOptions( PlatformOptions );
+#else
+		PlatformOptions.Reserved = NULL;
+#endif // EOS_RESERVED_PLATFORM_OPTIONS
+
 		if( bHasInvalidParams == true )
 		{
 			return EEOSResults::ER_MissingParameters;

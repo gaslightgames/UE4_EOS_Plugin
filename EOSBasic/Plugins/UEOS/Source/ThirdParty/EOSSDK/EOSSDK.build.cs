@@ -11,7 +11,15 @@ public class EOSSDK : ModuleRules
     public EOSSDK( TargetInfo Target )
 #endif
     {
+        // The currently supported version of the EOS SDK.
+        // EOSVersion = "1.4.1";
+
         Type = ModuleType.External;
+
+        if( Target.Configuration == UnrealTargetConfiguration.Development )
+        {
+            OptimizeCode = CodeOptimization.Never;
+        }
 
         string BaseDirectory = Path.GetFullPath( Path.Combine( ModuleDirectory, "..", "..", "ThirdParty", "EOSSDK" ) );
 

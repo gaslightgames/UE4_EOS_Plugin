@@ -10,6 +10,11 @@ public class UEOS : ModuleRules
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
         PublicDefinitions.Add( "EOS_LIB=1" );
 
+        if( Target.Configuration != UnrealTargetConfiguration.Shipping )
+        {
+            OptimizeCode = CodeOptimization.Never;
+        }
+
         PublicIncludePaths.AddRange(
             new string[] {
                 Path.Combine( ModuleDirectory, "Public" )

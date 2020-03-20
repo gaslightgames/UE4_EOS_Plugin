@@ -1,4 +1,4 @@
-// Fill out your copyright notice in the Description page of Project Settings.
+// (C) Gaslight Games Ltd, 2019-2020.  All rights reserved.
 
 using UnrealBuildTool;
 using System.Collections.Generic;
