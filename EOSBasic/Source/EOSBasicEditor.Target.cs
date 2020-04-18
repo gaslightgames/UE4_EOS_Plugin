@@ -7,7 +7,9 @@ public class EOSBasicEditorTarget : TargetRules
 {
 	public EOSBasicEditorTarget(TargetInfo Target) : base(Target)
 	{
-		Type = TargetType.Editor;
+        DefaultBuildSettings = BuildSettingsVersion.V2;
+
+        Type = TargetType.Editor;
 
 		ExtraModuleNames.AddRange( new string[] { "EOSBasic" } );
 	}

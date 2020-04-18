@@ -7,7 +7,9 @@ public class EOSBasicTarget : TargetRules
 {
 	public EOSBasicTarget(TargetInfo Target) : base(Target)
 	{
-		Type = TargetType.Game;
+        DefaultBuildSettings = BuildSettingsVersion.V2;
+
+        Type = TargetType.Game;
 
 		ExtraModuleNames.AddRange( new string[] { "EOSBasic" } );
 	}

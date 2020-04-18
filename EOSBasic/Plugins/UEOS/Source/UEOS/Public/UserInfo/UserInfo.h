@@ -1,7 +1,9 @@
+// Copyright (C) Gaslight Games Ltd, 2019-2020
+
 #pragma once
 
 // UE4 Includes
-#include "Object.h"
+#include "UObject/Object.h"
 
 // EOS SDK Includes
 #include "eos_sdk.h"

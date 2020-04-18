@@ -1,8 +1,8 @@
-// Copyright (C) Gaslight Games Ltd, 2019
+// Copyright (C) Gaslight Games Ltd, 2019-2020
 
 #pragma once
 
-#include "ModuleManager.h"
+#include "Modules/ModuleManager.h"
 #include "Tickable.h"
 
 class FUEOSModule : public IModuleInterface, public FTickableGameObject

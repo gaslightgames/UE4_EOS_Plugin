@@ -1,8 +1,8 @@
-// Copyright (C) Gaslight Games Ltd, 2019
+// Copyright (C) Gaslight Games Ltd, 2019-2020
 
 #include "UEOSModule.h"
 #include "UEOSPrivatePCH.h"
-#include "IPluginManager.h"
+#include "Interfaces/IPluginManager.h"
 
 // EOS Plugin Includes
 #include "Config/UEOSConfig.h"

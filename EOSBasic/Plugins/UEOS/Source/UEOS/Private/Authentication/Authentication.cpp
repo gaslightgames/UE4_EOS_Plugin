@@ -1,6 +1,6 @@
-// Copyright (C) Gaslight Games Ltd, 2019
+// Copyright (C) Gaslight Games Ltd, 2019-2020
 
-#include "Authentication.h"
+#include "Authentication/Authentication.h"
 
 #include "UEOSModule.h"
 #include "UEOSManager.h"

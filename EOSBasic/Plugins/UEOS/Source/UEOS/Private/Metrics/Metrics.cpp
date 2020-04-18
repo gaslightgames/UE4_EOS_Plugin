@@ -1,6 +1,6 @@
 // Copyright (C) Gaslight Games Ltd, 2019
 
-#include "Metrics.h"
+#include "Metrics/Metrics.h"
 
 // EOS Plugin Includes
 #include "UEOSModule.h"

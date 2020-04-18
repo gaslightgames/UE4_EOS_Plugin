@@ -1,4 +1,9 @@
-#include "UserInfo.h"
+// Copyright (C) Gaslight Games Ltd, 2019-2020
+
+#pragma once
+
+// UEOS Includes
+#include "UserInfo/UserInfo.h"
 
 #include "UEOSModule.h"
 #include "UEOSManager.h"

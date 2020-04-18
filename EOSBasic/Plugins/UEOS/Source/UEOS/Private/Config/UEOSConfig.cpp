@@ -1,6 +1,6 @@
 // Copyright (C) Gaslight Games Ltd, 2019-2020
 
-#include "Public/Config/UEOSConfig.h"
+#include "Config/UEOSConfig.h"
 
 UEOSConfig::UEOSConfig()
 	: ProductName( "EOS Plugin" )

@@ -1,9 +1,9 @@
-// Copyright (C) Gaslight Games Ltd, 2019
+// Copyright (C) Gaslight Games Ltd, 2019-2020
 
 #pragma once
 
 // Engine Includes
-#include "Object.h"
+#include "UObject/Object.h"
 
 // EOS Includes
 #include "eos_sdk.h"

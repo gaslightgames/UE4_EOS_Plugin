@@ -1,8 +1,10 @@
+// Copyright (C) Gaslight Games Ltd, 2019-2020
+
 #pragma once
 
-#include "Object.h"
+#include "UObject/Object.h"
 
-#include "Authentication.h"
+#include "Authentication/Authentication.h"
 #include "eos_sdk.h"
 #include "eos_friends.h"
 

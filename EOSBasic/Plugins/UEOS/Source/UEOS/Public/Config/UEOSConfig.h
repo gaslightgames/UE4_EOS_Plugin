@@ -3,7 +3,7 @@
 #pragma once
 
 // Engine Includes
-#include "Object.h"
+#include "UObject/Object.h"
 #include "Engine/DeveloperSettings.h"
 
 #include "UEOSConfig.generated.h"
