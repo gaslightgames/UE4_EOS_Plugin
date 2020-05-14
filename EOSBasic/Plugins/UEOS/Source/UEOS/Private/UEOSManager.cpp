@@ -433,6 +433,7 @@ FString UEOSManager::EOSResultToString( EOS_EResult Result )
 {
 	switch( Result )
 	{
+
 		case EOS_EResult::EOS_Success:
 			return "EOS_Success";
 		case EOS_EResult::EOS_NoConnection:
@@ -483,7 +484,7 @@ FString UEOSManager::EOSResultToString( EOS_EResult Result )
 			return "EOS_Disabled";
 		case EOS_EResult::EOS_DuplicateNotAllowed:
 			return "EOS_DuplicateNotAllowed";
-		case EOS_EResult::EOS_MissingParameters:
+		case EOS_EResult::EOS_MissingParameters_DEPRECATED:
 			return "EOS_MissingParameters";
 		case EOS_EResult::EOS_InvalidSandboxId:
 			return "EOS_InvalidSandboxId";
@@ -546,6 +547,8 @@ FString UEOSManager::EOSResultToString( EOS_EResult Result )
 			return "EOS_Auth_ScopeNotFound";
 		case EOS_EResult::EOS_Auth_AccountFeatureRestricted:
 			return "EOS_Auth_AccountFeatureRestricted";
+		case EOS_EResult::EOS_Auth_PersistentAuth_AccountNotActive:
+			return "EOS_AccountNotActive";
 
 		case EOS_EResult::EOS_Auth_PinGrantCode:
 			return "EOS_Auth_PinGrantCode";
@@ -756,6 +759,9 @@ FString UEOSManager::EOSResultToString( EOS_EResult Result )
 			return "EOS_Lobby_DeploymentAtCapacity";
 		case EOS_EResult::EOS_Lobby_NotAllowed:
 			return "EOS_Lobby_NotAllowed";
+		case EOS_EResult::EOS_Lobby_MemberUpdateOnly:
+			return "EOS_Lobby_MemberUpdateOnly";
+
 
 		case EOS_EResult::EOS_UnexpectedError:
 			return "EOS_UnexpectedError";
