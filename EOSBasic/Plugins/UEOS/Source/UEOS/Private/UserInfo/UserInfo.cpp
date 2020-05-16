@@ -19,22 +19,27 @@ void UEOSUserInfo::Init()
 	UserInfoHandle = EOS_Platform_GetUserInfoInterface( UEOSManager::GetPlatformHandle() );
 }
 
-void UEOSUserInfo::QueryNameByAccountId( const FAccountId& AccountId )
+void UEOSUserInfo::QueryUserInfoByAccountId( const FEpicAccountId& EpicAccountId )
 {
-	EOS_UserInfo_QueryUserInfoOptions Options;
+	if( UserInfoHandle == nullptr )
+	{
+		Init();
+	}
+
+	EOS_UserInfo_QueryUserInfoOptions Options = {};
 	Options.ApiVersion = EOS_USERINFO_QUERYUSERINFO_API_LATEST;
-	Options.LocalUserId = UEOSManager::GetEOSManager()->GetAuthentication()->GetAccountId();
-	Options.TargetUserId = AccountId;
+	Options.LocalUserId = UEOSManager::GetEOSManager()->GetAuthentication()->GetEpicAccountId().EpicAccountId;
+	Options.TargetUserId = EpicAccountId.EpicAccountId;
 
 	EOS_UserInfo_QueryUserInfo( UserInfoHandle, &Options, nullptr, QueryUserInfoCallback );
 }
 
-FString UEOSUserInfo::GetDisplayName( const FAccountId& AccountId )
+FString UEOSUserInfo::GetDisplayName( const FEpicAccountId& EpicAccountId )
 {
 	EOS_UserInfo_CopyUserInfoOptions Options;
 	Options.ApiVersion = EOS_USERINFO_COPYUSERINFO_API_LATEST;
-	Options.LocalUserId = UEOSManager::GetEOSManager()->GetAuthentication()->GetAccountId();
-	Options.TargetUserId = AccountId;
+	Options.LocalUserId = UEOSManager::GetEOSManager()->GetAuthentication()->GetEpicAccountId();
+	Options.TargetUserId = EpicAccountId;
 
 	EOS_UserInfo* UserInfo = nullptr;
 
@@ -67,7 +72,7 @@ void UEOSUserInfo::QueryUserInfoCallback( const EOS_UserInfo_QueryUserInfoCallba
 	{
 		if( EOSUserInfo != nullptr )
 		{
-			EOSUserInfo->OnUserInfoRetreived.Broadcast( FAccountId( Data->TargetUserId ) );
+			EOSUserInfo->OnUserInfoRetreived.Broadcast( FEpicAccountId( Data->TargetUserId ) );
 		}
 	}
 	else
@@ -75,7 +80,7 @@ void UEOSUserInfo::QueryUserInfoCallback( const EOS_UserInfo_QueryUserInfoCallba
 		UE_LOG( UEOSLog, Warning, TEXT( "[EOS SDK | Plugin] Error when querying user info: %s" ), *UEOSCommon::EOSResultToString( Data->ResultCode ) );
 		if( EOSUserInfo != nullptr )
 		{
-			EOSUserInfo->OnUserInfoError.Broadcast( FAccountId( Data->TargetUserId ) );
+			EOSUserInfo->OnUserInfoError.Broadcast( FEpicAccountId( Data->TargetUserId ) );
 		}
 	}
 }

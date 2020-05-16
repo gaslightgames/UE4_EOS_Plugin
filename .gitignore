@@ -103,3 +103,4 @@ EOSBasic/Plugins/*/Intermediate/*
 # Cache files for the editor to use
 EOSBasic/DerivedDataCache/*
 Tools
+/EOSBasic/Config/DefaultGame_Local.ini

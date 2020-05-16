@@ -41,8 +41,8 @@ public:
 	void						RefreshFriends();
 
 	int							GetFriendsCount();
-	FAccountId					GetAccountId( int Index );
-	EFriendStatus				GetStatus( FAccountId AccountId );
+	FEpicAccountId				GetEpicAccountId( int Index );
+	EFriendStatus				GetStatus( FEpicAccountId EpicAccountId );
 
 	/**
 	 * Fires when a call to RefreshFriends succeeds

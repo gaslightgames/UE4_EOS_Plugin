@@ -23,7 +23,7 @@ void UEOSFriends::RefreshFriends()
 {
 	EOS_Friends_QueryFriendsOptions Options;
 	Options.ApiVersion = EOS_FRIENDS_QUERYFRIENDS_API_LATEST;
-	Options.LocalUserId = UEOSManager::GetEOSManager()->GetAuthentication()->GetAccountId();
+	Options.LocalUserId = UEOSManager::GetEOSManager()->GetAuthentication()->GetEpicAccountId();
 	EOS_Friends_QueryFriends( FriendsHandle, &Options, nullptr, QueryFriendsCallback );
 }
 
@@ -50,26 +50,26 @@ int UEOSFriends::GetFriendsCount()
 {
 	EOS_Friends_GetFriendsCountOptions Options;
 	Options.ApiVersion = EOS_FRIENDS_GETFRIENDSCOUNT_API_LATEST;
-	Options.LocalUserId = UEOSManager::GetEOSManager()->GetAuthentication()->GetAccountId();
+	Options.LocalUserId = UEOSManager::GetEOSManager()->GetAuthentication()->GetEpicAccountId();
 	return EOS_Friends_GetFriendsCount( FriendsHandle, &Options );
 }
 
-FAccountId UEOSFriends::GetAccountId( int Index )
+FEpicAccountId UEOSFriends::GetEpicAccountId( int Index )
 {
 	EOS_Friends_GetFriendAtIndexOptions Options;
 	Options.ApiVersion = EOS_FRIENDS_GETFRIENDATINDEX_API_LATEST;
-	Options.LocalUserId = UEOSManager::GetEOSManager()->GetAuthentication()->GetAccountId();
+	Options.LocalUserId = UEOSManager::GetEOSManager()->GetAuthentication()->GetEpicAccountId();
 	Options.Index = Index;
-	EOS_EpicAccountId AccountId = EOS_Friends_GetFriendAtIndex( FriendsHandle, &Options );
-	return AccountId;
+	EOS_EpicAccountId EpicAccountId = EOS_Friends_GetFriendAtIndex( FriendsHandle, &Options );
+	return EpicAccountId;
 }
 
-EFriendStatus UEOSFriends::GetStatus( FAccountId AccountId )
+EFriendStatus UEOSFriends::GetStatus( FEpicAccountId EpicAccountId )
 {
 	EOS_Friends_GetStatusOptions StatusOptions;
 	StatusOptions.ApiVersion = EOS_FRIENDS_GETSTATUS_API_LATEST;
-	StatusOptions.LocalUserId = UEOSManager::GetEOSManager()->GetAuthentication()->GetAccountId();
-	StatusOptions.TargetUserId = AccountId;
+	StatusOptions.LocalUserId = UEOSManager::GetEOSManager()->GetAuthentication()->GetEpicAccountId();
+	StatusOptions.TargetUserId = EpicAccountId;
 	EOS_EFriendsStatus Status = EOS_Friends_GetStatus( FriendsHandle, &StatusOptions );
 	return (EFriendStatus)Status;
 }

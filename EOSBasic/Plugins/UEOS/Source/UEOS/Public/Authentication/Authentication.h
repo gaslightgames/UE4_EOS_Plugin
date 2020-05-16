@@ -34,33 +34,38 @@ enum class ELoginMode : uint8
 /**
 * Adapted from the sample, to work within UE4 UBT.
 */
-USTRUCT()
-struct UEOS_API FAccountId
+USTRUCT( BlueprintType )
+struct UEOS_API FEpicAccountId
 {
 	GENERATED_BODY()
 
 	/**
 	* Construct wrapper from account id.
 	*/
-	FAccountId( EOS_EpicAccountId InAccountId )
-		: AccountId( InAccountId )
+	FEpicAccountId( EOS_EpicAccountId InAccountId )
+		: EpicAccountId( InAccountId )
 	{
 	};
 
-	FAccountId() = default;
+	FEpicAccountId() = default;
 
-	FAccountId( const FAccountId& ) = default;
+	FEpicAccountId( const FEpicAccountId& ) = default;
 
-	FAccountId& operator=( const FAccountId& ) = default;
+	FEpicAccountId& operator=( const FEpicAccountId& ) = default;
 
-	bool operator==( const FAccountId& Other ) const
+	bool operator==( const FEpicAccountId& Other ) const
 	{
-		return AccountId == Other.AccountId;
+		return EpicAccountId == Other.EpicAccountId;
 	}
 
-	bool operator!=( const FAccountId& Other ) const
+	bool operator!=( const FEpicAccountId& Other ) const
 	{
 		return !( this->operator==( Other ) );
+	}
+
+	bool operator<( const FEpicAccountId& Other ) const
+	{
+		return EpicAccountId < Other.EpicAccountId;
 	}
 
 	/**
@@ -73,7 +78,7 @@ struct UEOS_API FAccountId
 	*/
 	operator EOS_EpicAccountId() const
 	{
-		return AccountId;
+		return EpicAccountId;
 	}
 
 	/**
@@ -85,12 +90,12 @@ struct UEOS_API FAccountId
 	* Returns an Account ID from a String interpretation of one.
 	*
 	* @param AccountId the FString representation of an Account ID.
-	* @return FAccountId An Account ID from the string, if valid.
+	* @return FEpicAccountId An Account ID from the string, if valid.
 	*/
-	static FAccountId			FromString( const FString& AccountId );
+	static FEpicAccountId		FromString( const FString& AccountId );
 
 	/** The EOS SDK matching Account Id. */
-	EOS_EpicAccountId			AccountId;
+	EOS_EpicAccountId			EpicAccountId;
 };
 
 UCLASS()
@@ -175,11 +180,11 @@ public:
 	UPROPERTY( BlueprintAssignable, Category = "UEOS|Authentication" )
 		FOnUserLoginFail			OnUserLoginFail;
 
-	UFUNCTION()
-	FAccountId GetAccountId() const
-	{
-		return AccountId;
-	}
+	UFUNCTION( BlueprintCallable, Category = "UEOS|Authentication" )
+		FEpicAccountId GetEpicAccountId() const
+		{
+			return EpicAccountId;
+		}
 
 protected:
 
@@ -210,8 +215,8 @@ private:
 	/** Handle for Auth interface. */
 	EOS_HAuth						AuthHandle;
 
-	/** The Account ID for this Authentication session. */
-	FAccountId						AccountId;
+	/** The Epic Account ID for this Authentication session. */
+	FEpicAccountId					EpicAccountId;
 
 	/** Whether a Login has been successful and this Authentication session is Authorised. */
 	UPROPERTY()

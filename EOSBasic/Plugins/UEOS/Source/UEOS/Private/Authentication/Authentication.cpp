@@ -10,7 +10,7 @@
 
 UEOSAuthentication::UEOSAuthentication()
 	: AuthHandle( NULL )
-	, AccountId()
+	, EpicAccountId()
 	, bAuthorised( false )
 {
 
@@ -59,40 +59,40 @@ void UEOSAuthentication::Login( ELoginMode LoginMode, FString UserId, FString Us
 
 	switch( LoginMode )
 	{
-		case ELoginMode::LM_IDPassword:
-		{
-			MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In as User Id: %s." ), *UserId );
-			UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
-			Credentials.Id = TCHAR_TO_UTF8( *UserId );
-			Credentials.Token = TCHAR_TO_UTF8( *UserToken );
-			Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_Password;
-			break;
-		}
-		case ELoginMode::LM_ExchangeCode:
-		{
-			MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In with Exchange Code." ) );
-			UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
-			Credentials.Token = TCHAR_TO_UTF8( *UserId );
-			Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_ExchangeCode;
-			break;
-		}
-		case ELoginMode::LM_PinGrant:
-		{
-			MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In with Pin Grant." ) );
-			UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
-			Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_DeviceCode;
-			break;
-		}
-		case ELoginMode::LM_DevTool:
-		{
-			MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In with Dev Auth Tool | ID: %s | Token: %s." ), *UserId, *UserToken );
-			UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
-			Credentials.Id = TCHAR_TO_UTF8( *UserId );
-			Credentials.Token = TCHAR_TO_UTF8( *UserToken );
-			Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_Developer;
+	case ELoginMode::LM_IDPassword:
+	{
+		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In as User Id: %s." ), *UserId );
+		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+		Credentials.Id = TCHAR_TO_UTF8( *UserId );
+		Credentials.Token = TCHAR_TO_UTF8( *UserToken );
+		Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_Password;
+		break;
+	}
+	case ELoginMode::LM_ExchangeCode:
+	{
+		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In with Exchange Code." ) );
+		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+		Credentials.Token = TCHAR_TO_UTF8( *UserId );
+		Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_ExchangeCode;
+		break;
+	}
+	case ELoginMode::LM_PinGrant:
+	{
+		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In with Pin Grant." ) );
+		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+		Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_DeviceCode;
+		break;
+	}
+	case ELoginMode::LM_DevTool:
+	{
+		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In with Dev Auth Tool | ID: %s | Token: %s." ), *UserId, *UserToken );
+		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+		Credentials.Id = TCHAR_TO_UTF8( *UserId );
+		Credentials.Token = TCHAR_TO_UTF8( *UserToken );
+		Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_Developer;
 
-			break;
-		}
+		break;
+	}
 	}
 
 	LoginOptions.Credentials = &Credentials;
@@ -109,7 +109,7 @@ void UEOSAuthentication::Logout()
 
 	EOS_Auth_LogoutOptions LogoutOptions;
 	LogoutOptions.ApiVersion = EOS_AUTH_LOGOUT_API_LATEST;
-	LogoutOptions.LocalUserId = AccountId;
+	LogoutOptions.LocalUserId = EpicAccountId;
 
 	EOS_Auth_Logout( AuthHandle, &LogoutOptions, NULL, LogoutCompleteCallback );
 }
@@ -124,7 +124,7 @@ bool UEOSAuthentication::GetAuthTokenCopy( EOS_Auth_Token** OutToken )
 	EOS_Auth_CopyUserAuthTokenOptions TokenOpt;
 	TokenOpt.ApiVersion = EOS_AUTH_COPYUSERAUTHTOKEN_API_LATEST;
 
-	EOS_EResult Result = EOS_Auth_CopyUserAuthToken( AuthHandle, &TokenOpt, UEOSManager::GetAuthentication()->AccountId, OutToken );
+	EOS_EResult Result = EOS_Auth_CopyUserAuthToken( AuthHandle, &TokenOpt, UEOSManager::GetAuthentication()->EpicAccountId, OutToken );
 	return Result == EOS_EResult::EOS_Success;
 }
 
@@ -170,16 +170,16 @@ void UEOSAuthentication::LoginCompleteCallback( const EOS_Auth_LoginCallbackInfo
 
 	if( Data->ResultCode == EOS_EResult::EOS_Success )
 	{
-		UEOSManager::GetAuthentication()->AccountId = Data->LocalUserId;
+		UEOSManager::GetAuthentication()->EpicAccountId = Data->LocalUserId;
 
 		const int32_t AccountsCount = EOS_Auth_GetLoggedInAccountsCount( AuthHandle );
 		for( int32_t AccountIdx = 0; AccountIdx < AccountsCount; ++AccountIdx )
 		{
-			FAccountId AccountId;
-			AccountId = EOS_Auth_GetLoggedInAccountByIndex( AuthHandle, AccountIdx );
+			FEpicAccountId EpicAccountId;
+			EpicAccountId = EOS_Auth_GetLoggedInAccountByIndex( AuthHandle, AccountIdx );
 
 			EOS_ELoginStatus LoginStatus;
-			LoginStatus = EOS_Auth_GetLoginStatus( AuthHandle, UEOSManager::GetAuthentication()->AccountId );
+			LoginStatus = EOS_Auth_GetLoginStatus( AuthHandle, UEOSManager::GetAuthentication()->EpicAccountId );
 
 			MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] AccountIdx: %d Status: %d" ), AccountIdx, (int32_t)LoginStatus );
 			UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
@@ -257,22 +257,22 @@ void UEOSAuthentication::PrintAuthToken( EOS_Auth_Token* InAuthToken )
 	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
 }
 
-FString FAccountId::ToString() const
+FString FEpicAccountId::ToString() const
 {
 	static char TempBuffer[EOS_EPICACCOUNTID_MAX_LENGTH];
 	int32_t TempBufferSize = sizeof( TempBuffer );
-	EOS_EpicAccountId_ToString( AccountId, TempBuffer, &TempBufferSize );
+	EOS_EpicAccountId_ToString( EpicAccountId, TempBuffer, &TempBufferSize );
 	FString returnValue( TempBuffer );
 	return returnValue;
 }
 
-FAccountId FAccountId::FromString(const FString& AccountId)
+FEpicAccountId FEpicAccountId::FromString( const FString& AccountId )
 {
-	EOS_EpicAccountId Account = EOS_EpicAccountId_FromString(TCHAR_TO_ANSI(*AccountId));
-	return FAccountId(Account);
+	EOS_EpicAccountId Account = EOS_EpicAccountId_FromString( TCHAR_TO_ANSI( *AccountId ) );
+	return FEpicAccountId( Account );
 }
 
-FAccountId::operator bool() const
+FEpicAccountId::operator bool() const
 {
-	return ( EOS_EpicAccountId_IsValid( AccountId ) == EOS_TRUE ) ? true : false;
+	return ( EOS_EpicAccountId_IsValid( EpicAccountId ) == EOS_TRUE ) ? true : false;
 }
