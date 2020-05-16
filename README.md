@@ -23,9 +23,9 @@ Once you have the SDK initialized, then you can use:
 - N will attempt to Begin a Player Session.
 - M will attempt to End a Player Session.
 
-The options for Account Login/Logout will **ONLY** work if your Project is on the Epic Store, or an Epic Store Partner. The same goes for running the Developer Authentication Tool.
-- ~~I will attempt to Login~~
-- ~~O will attempt to Logout (will only work if a successful Login occurred first)~~
+The options for Account Login/Logout will **ONLY** work if you configure your Project with Epic Account Services, through the Dashboard. Once you have done that, create a Client, get the ClientID and Client Secret, add these to the Project Settings and you're good to go. The same goes for running the Developer Authentication Tool.
+- I will attempt to Login
+- O will attempt to Logout (will only work if a successful Login occurred first)
 
 The project, blueprint nodes and comments have more direct usage information.
 
