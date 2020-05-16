@@ -8,8 +8,6 @@
 
 #include <string>
 
-#define PRODUCT_ON_EGS 0
-
 UEOSAuthentication::UEOSAuthentication()
 	: AuthHandle( NULL )
 	, AccountId()
@@ -22,11 +20,17 @@ void UEOSAuthentication::Login( ELoginMode LoginMode, FString UserId, FString Us
 {
 	FString	MessageText;
 
-#if PRODUCT_ON_EGS
 	if( !UEOSManager::IsEOSInitialized() )
 	{
 		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Can't Log In - EOS SDK Not Initialized!." ) );
 		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+
+		// Broadcast the Login Failure Delegate.
+		if( UEOSManager::GetAuthentication()->OnUserLoginFail.IsBound() )
+		{
+			UEOSManager::GetAuthentication()->OnUserLoginFail.Broadcast();
+		}
+
 		return;
 	}
 
@@ -36,6 +40,13 @@ void UEOSAuthentication::Login( ELoginMode LoginMode, FString UserId, FString Us
 	{
 		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Can't Log In - Failed to get Authentication Handle." ) );
 		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+
+		// Broadcast the Login Failure Delegate.
+		if( UEOSManager::GetAuthentication()->OnUserLoginFail.IsBound() )
+		{
+			UEOSManager::GetAuthentication()->OnUserLoginFail.Broadcast();
+		}
+
 		return;
 	}
 
@@ -87,10 +98,6 @@ void UEOSAuthentication::Login( ELoginMode LoginMode, FString UserId, FString Us
 	LoginOptions.Credentials = &Credentials;
 
 	EOS_Auth_Login( AuthHandle, &LoginOptions, NULL, LoginCompleteCallback );
-#else
-	MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Account Auth, Login & Logout are ONLY available on EGS. Change PRODUCT_ON_EGS to 1 to use." ) );
-	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
-#endif
 }
 
 void UEOSAuthentication::Logout()
