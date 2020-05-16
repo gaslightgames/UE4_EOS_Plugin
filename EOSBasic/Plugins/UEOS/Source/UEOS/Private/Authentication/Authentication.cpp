@@ -3,6 +3,7 @@
 #include "Authentication/Authentication.h"
 
 #include "UEOSModule.h"
+#include "UEOSCommon.h"
 #include "UEOSManager.h"
 
 #include <string>
@@ -150,7 +151,7 @@ FString UEOSAuthentication::AccountIDToString( EOS_EpicAccountId InAccountId )
 		return returnValue;
 	}
 
-	FString MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Epic Account Id To String Error: " ), *UEOSManager::EOSResultToString( Result ) );
+	FString MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Epic Account Id To String Error: " ), *UEOSCommon::EOSResultToString( Result ) );
 	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
 
 	return returnValue;
@@ -208,7 +209,7 @@ void UEOSAuthentication::LoginCompleteCallback( const EOS_Auth_LoginCallbackInfo
 	}
 	else
 	{
-		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Login Failed - Error Code: %s" ), *UEOSManager::EOSResultToString( Data->ResultCode ) );
+		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Login Failed - Error Code: %s" ), *UEOSCommon::EOSResultToString( Data->ResultCode ) );
 		UE_LOG( UEOSLog, Error, TEXT( "%s" ), *MessageText );
 
 		// Broadcast the Login Failure Delegate.
@@ -223,7 +224,7 @@ void UEOSAuthentication::LogoutCompleteCallback( const EOS_Auth_LogoutCallbackIn
 {
 	check( Data != NULL );
 
-	FString MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logout Complete: %s | User: %s" ), *UEOSManager::EOSResultToString( Data->ResultCode ), *AccountIDToString( Data->LocalUserId ) );
+	FString MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logout Complete: %s | User: %s" ), *UEOSCommon::EOSResultToString( Data->ResultCode ), *AccountIDToString( Data->LocalUserId ) );
 	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
 
 	UEOSManager::GetAuthentication()->bAuthorised = true;

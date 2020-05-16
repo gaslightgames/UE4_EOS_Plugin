@@ -21,7 +21,7 @@ void FUEOSModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
 #if !PLATFORM_LINUX
-#if defined(EOS_LIB)
+#if defined( EOS_LIB )
 	// Get the base directory of this plugin
 	FString BaseDir = IPluginManager::Get().FindPlugin( "UEOS" )->GetBaseDir();
 	const FString SDKDir = FPaths::Combine( *BaseDir, TEXT( "Source" ), TEXT( "ThirdParty" ), TEXT( "EOSSDK" ) );
@@ -35,20 +35,15 @@ void FUEOSModule::StartupModule()
 
 	if( !LoadDependency( LibDir, LibName, EOSSDKHandle ) )
 	{
-		FMessageDialog::Open(
-			EAppMsgType::Ok,
-			LOCTEXT( LOCTEXT_NAMESPACE,
-				"Failed to load UEOS plugin. Plug-in will not be functional." ) );
+		FMessageDialog::Open( EAppMsgType::Ok, LOCTEXT( LOCTEXT_NAMESPACE, "Failed to load UEOS plugin. Plug-in will not be functional." ) );
 		FreeDependency( EOSSDKHandle );
 	}
 #elif PLATFORM_MAC
 	const FString LibName = TEXT( "EOSSDK-Mac-Shipping" );
 	const FString LibDir = FPaths::Combine( *SDKDir, TEXT( "Bin" ) );
-	if( !LoadDependency( LibDir, LibName, EOSSDKHandle ) ) {
-		FMessageDialog::Open(
-			EAppMsgType::Ok,
-			LOCTEXT( LOCTEXT_NAMESPACE,
-				"Failed to load UEOS plugin. Plug-in will not be functional." ) );
+	if( !LoadDependency( LibDir, LibName, EOSSDKHandle ) )
+	{
+		FMessageDialog::Open( EAppMsgType::Ok, LOCTEXT( LOCTEXT_NAMESPACE, "Failed to load UEOS plugin. Plug-in will not be functional." ) );
 		FreeDependency( EOSSDKHandle );
 	}
 #endif
@@ -65,7 +60,7 @@ void FUEOSModule::ShutdownModule()
 
 	// Free the dll handle
 #if !PLATFORM_LINUX
-#if defined(EOS_LIB)
+#if defined( EOS_LIB )
 	FreeDependency( EOSSDKHandle );
 #endif
 #endif
@@ -128,7 +123,7 @@ void FUEOSModule::RegisterSettings()
 
 void FUEOSModule::UnregisterSettings()
 {
-	
+
 }
 
 void FUEOSModule::Tick( float DeltaTime )
@@ -142,7 +137,7 @@ void FUEOSModule::Tick( float DeltaTime )
 }
 
 #undef LOCTEXT_NAMESPACE
-	
+
 IMPLEMENT_MODULE( FUEOSModule, UEOS )
 
 DEFINE_LOG_CATEGORY( UEOSLog );

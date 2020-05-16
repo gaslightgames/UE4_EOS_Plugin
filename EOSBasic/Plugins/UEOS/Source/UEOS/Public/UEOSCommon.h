@@ -114,6 +114,13 @@ public:
 	*/
 	static EEOSResultType			GetUnrealFriendlyResult( EOS_EResult SDKResult, EEOSResults& Result, EEOSAuth& Auth, EEOSFriends& Friends, EEOSPresence& Presence, EEOSEcom& Ecom );
 
+	/**
+	* Get the EOS Plugin version of the results, from the SDK Enum.
+	* The EOS side is Engine/Blueprint ready.
+	*
+	* @param SDKResult The SDK Enum to request turning into a BP version.
+	* @return EEOSResults The EOS Plugin, Engine/Blueprint version.
+	*/
 	static EEOSResults				GetResultsValue( EOS_EResult SDKResult );
 
 	static EEOSAuth					GetAuthValue( EOS_EResult SDKResult );
@@ -123,4 +130,12 @@ public:
 	static EEOSPresence				GetPresenceValue( EOS_EResult SDKResult );
 
 	static EEOSEcom					GetEcomValue( EOS_EResult SDKResult );
+
+	/**
+	* Utility to return an EOS Result as a FString.
+	*
+	* @param Result The EOS Result to attempt to convert.
+	* @return FString result of the conversion.
+	*/
+	static FString					EOSResultToString( EOS_EResult Result );
 };

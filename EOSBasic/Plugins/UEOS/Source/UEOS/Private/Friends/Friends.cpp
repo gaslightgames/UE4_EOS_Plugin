@@ -40,7 +40,7 @@ void UEOSFriends::QueryFriendsCallback( const EOS_Friends_QueryFriendsCallbackIn
 		}
 		else
 		{
-			UE_LOG( UEOSLog, Warning, TEXT( "[EOS SDK | Plugin] Error when querying friends: %s" ), *UEOSManager::EOSResultToString( Data->ResultCode ) );
+			UE_LOG( UEOSLog, Warning, TEXT( "[EOS SDK | Plugin] Error when querying friends: %s" ), *UEOSCommon::EOSResultToString( Data->ResultCode ) );
 			EOSFriends->OnRefreshFriendsError.Broadcast();
 		}
 	}

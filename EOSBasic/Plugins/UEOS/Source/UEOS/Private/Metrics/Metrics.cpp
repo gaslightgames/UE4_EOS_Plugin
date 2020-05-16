@@ -102,7 +102,7 @@ bool UEOSMetrics::BeginPlayerSession( FString DisplayName, ESupportedAccountType
 	const EOS_EResult Result = EOS_Metrics_BeginPlayerSession( MetricsHandle, &MetricsOptions );
 	if( Result != EOS_EResult::EOS_Success )
 	{
-		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Begin Player Session Failed! Result: %s." ), *UEOSManager::EOSResultToString( Result ) );
+		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Begin Player Session Failed! Result: %s." ), *UEOSCommon::EOSResultToString( Result ) );
 		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
 
 		return false;
@@ -152,7 +152,7 @@ bool UEOSMetrics::EndPlayerSession( FString DisplayName )
 	const EOS_EResult Result = EOS_Metrics_EndPlayerSession( MetricsHandle, &MetricsOptions );
 	if( Result != EOS_EResult::EOS_Success )
 	{
-		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] End Player Session Failed! Result: %s." ), *UEOSManager::EOSResultToString( Result ) );
+		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] End Player Session Failed! Result: %s." ), *UEOSCommon::EOSResultToString( Result ) );
 		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
 
 		return false;

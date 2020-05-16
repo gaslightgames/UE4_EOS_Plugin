@@ -42,7 +42,7 @@ FString UEOSUserInfo::GetDisplayName( const FAccountId& AccountId )
 
 	if( ResultCode != EOS_EResult::EOS_Success )
 	{
-		UE_LOG( UEOSLog, Warning, TEXT( "[EOS SDK | Plugin] Error when getting display name: %s" ), *UEOSManager::EOSResultToString( ResultCode ) );
+		UE_LOG( UEOSLog, Warning, TEXT( "[EOS SDK | Plugin] Error when getting display name: %s" ), *UEOSCommon::EOSResultToString( ResultCode ) );
 	}
 
 	if( UserInfo == nullptr )
@@ -72,7 +72,7 @@ void UEOSUserInfo::QueryUserInfoCallback( const EOS_UserInfo_QueryUserInfoCallba
 	}
 	else
 	{
-		UE_LOG( UEOSLog, Warning, TEXT( "[EOS SDK | Plugin] Error when querying user info: %s" ), *UEOSManager::EOSResultToString( Data->ResultCode ) );
+		UE_LOG( UEOSLog, Warning, TEXT( "[EOS SDK | Plugin] Error when querying user info: %s" ), *UEOSCommon::EOSResultToString( Data->ResultCode ) );
 		if( EOSUserInfo != nullptr )
 		{
 			EOSUserInfo->OnUserInfoError.Broadcast( FAccountId( Data->TargetUserId ) );
