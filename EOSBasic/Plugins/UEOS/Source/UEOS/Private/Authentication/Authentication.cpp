@@ -104,7 +104,6 @@ void UEOSAuthentication::Logout()
 {
 	FString	MessageText;
 
-#if PRODUCT_ON_EGS
 	MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging Out..." ) );
 	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
 
@@ -113,10 +112,6 @@ void UEOSAuthentication::Logout()
 	LogoutOptions.LocalUserId = AccountId;
 
 	EOS_Auth_Logout( AuthHandle, &LogoutOptions, NULL, LogoutCompleteCallback );
-#else
-	MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Account Auth, Login & Logout are ONLY available on EGS. Change PRODUCT_ON_EGS to 1 to use." ) );
-	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
-#endif
 }
 
 bool UEOSAuthentication::GetAuthorised()
