@@ -24,8 +24,13 @@ Once you have the SDK initialized, then you can use:
 - M will attempt to End a Player Session.
 
 The options for Account Login/Logout will **ONLY** work if you configure your Project with Epic Account Services, through the Dashboard. Once you have done that, create a Client, get the ClientID and Client Secret, add these to the Project Settings and you're good to go. The same goes for running the Developer Authentication Tool.
+Once you have initialized the SDK, you can also use:
 - I will attempt to Login
 - O will attempt to Logout (will only work if a successful Login occurred first)
+
+The first/initial implementation for support of UserInfo queries is now in. You must have your project configured through EAS (in the Dashboard). You need to initialize the SDK and Login, so a valid AccountId can be retrieved.
+Once you have initialized and logged in, you can also use:
+- R will attempt to request UserInfo and then populate the DisplayName in the Widget
 
 The project, blueprint nodes and comments have more direct usage information.
 
