@@ -25,30 +25,35 @@ void FUEOSModule::StartupModule()
 	// Get the base directory of this plugin
 	FString BaseDir = IPluginManager::Get().FindPlugin( "UEOS" )->GetBaseDir();
 	const FString SDKDir = FPaths::Combine( *BaseDir, TEXT( "Source" ), TEXT( "ThirdParty" ), TEXT( "EOSSDK" ) );
+	bool bLoaded = false;
+
 #if PLATFORM_WINDOWS
+
 #if PLATFORM_32BITS
 	const FString LibName = TEXT( "EOSSDK-Win32-Shipping" );
 #else
 	const FString LibName = TEXT( "EOSSDK-Win64-Shipping" );
 #endif
 	const FString LibDir = FPaths::Combine( *SDKDir, TEXT( "Bin" ) );
-
-	if( !LoadDependency( LibDir, LibName, EOSSDKHandle ) )
-	{
-		FMessageDialog::Open( EAppMsgType::Ok, LOCTEXT( LOCTEXT_NAMESPACE, "Failed to load UEOS plugin. Plug-in will not be functional." ) );
-		FreeDependency( EOSSDKHandle );
-	}
 #elif PLATFORM_MAC
 	const FString LibName = TEXT( "EOSSDK-Mac-Shipping" );
 	const FString LibDir = FPaths::Combine( *SDKDir, TEXT( "Bin" ) );
-	if( !LoadDependency( LibDir, LibName, EOSSDKHandle ) )
+#endif // WINDOWS/MAC
+
+	if( LoadDependency( LibDir, LibName, EOSSDKHandle ) == false )
 	{
-		FMessageDialog::Open( EAppMsgType::Ok, LOCTEXT( LOCTEXT_NAMESPACE, "Failed to load UEOS plugin. Plug-in will not be functional." ) );
+		FMessageDialog::Open( EAppMsgType::Ok, LOCTEXT( LOCTEXT_NAMESPACE, "Failed to load EOS SDK. Plug-in will not be functional." ) );
 		FreeDependency( EOSSDKHandle );
 	}
-#endif
-#endif
-#endif
+	else
+	{
+#if !WITH_EDITOR
+		UEOSManager::GetEOSManager()->InitEOS();
+#endif // WITH_EDITOR
+	}
+
+#endif // EOS_LIB
+#endif // NOT LINUX
 
 	RegisterSettings();
 }
