@@ -8,6 +8,7 @@
 #include "UserInfo/UserInfo.h"
 
 #include "UEOSModule.h"
+#include <cassert>
 
 //TODO - Class is in the works - will be used with friend interface - Mikhail 
 
@@ -16,55 +17,71 @@ UEOSPresence::UEOSPresence()
 
 }
 
-EPresenceStatus UEOSPresence::GetPresenceStatus(const FEpicAccountId& InFriendInfo)
-{
-	EOS_HPresence PresenceHandle = EOS_Platform_GetPresenceInterface(UEOSManager::GetPlatformHandle());
-	
-	EOS_Presence_CopyPresenceOptions CopyOptions;
-	CopyOptions.ApiVersion = EOS_PRESENCE_COPYPRESENCE_API_LATEST;
-	CopyOptions.LocalUserId = UEOSManager::GetAuthentication()->GetEpicAccountId();
-
-	FEpicAccountId AccountId = FEpicAccountId();
-	CopyOptions.TargetUserId = AccountId.FromString(InFriendInfo.ToString());
-
-	EOS_Presence_Info* PresenceInfo = nullptr;
-	EOS_EResult ResultCode = EOS_Presence_CopyPresence(PresenceHandle, &CopyOptions, &PresenceInfo);
-
-	if (ResultCode != EOS_EResult::EOS_Success)
-	{
-		UE_LOG(UEOSLog, Warning, TEXT("[EOS SDK | Plugin] Error when getting presence status: %s"), *UEOSCommon::EOSResultToString(ResultCode));
-	}
-	
-	EPresenceStatus PresenceStatus = (EPresenceStatus)PresenceInfo->Status;
-
-	EOS_Presence_Info_Release(PresenceInfo);
-
-	return PresenceStatus;
-}
-
-void UEOSPresence::AddFriendPresence(const FEpicAccountId& InFriendInfo)
+void UEOSPresence::QueryFriendPresence(const FBPCrossPlayInfo& InFriendInfo)
 {
 	EOS_HPresence PresenceHandle = EOS_Platform_GetPresenceInterface(UEOSManager::GetPlatformHandle());
 	FEpicAccountId AccountId = FEpicAccountId();
 	EOS_Presence_QueryPresenceOptions Options;
 	Options.ApiVersion = EOS_PRESENCE_QUERYPRESENCE_API_LATEST;
 	Options.LocalUserId = UEOSManager::GetAuthentication()->GetEpicAccountId();
-	Options.TargetUserId = AccountId.FromString(InFriendInfo.ToString());
-	EOS_Presence_QueryPresence(PresenceHandle, &Options, NULL, QueryPresenceCompleteCallback);
+	Options.TargetUserId = AccountId.FromString(InFriendInfo.IdAsString);
+
+	FBPCrossPlayInfo NewFriendInfo(InFriendInfo);
+	EOS_Presence_QueryPresence(PresenceHandle, &Options, &NewFriendInfo, QueryPresenceCompleteCallback);
 }
 
 void UEOSPresence::QueryPresenceCompleteCallback(const EOS_Presence_QueryPresenceCallbackInfo* Data)
 {
-	check(Data != nullptr);
+	assert(Data != nullptr);
 
-	UE_LOG(UEOSLog, Log, TEXT("On query presence result code: %s"), *UEOSCommon::EOSResultToString(Data->ResultCode));
+	if (Data->ResultCode != EOS_EResult::EOS_Success)
+	{
+		UE_LOG(UEOSLog, Log, TEXT("[EOS SDK | Plugin] Error when getting presence status: %s"), *UEOSCommon::EOSResultToString(Data->ResultCode));
+		return;
+	}
 
-	UEOSUserInfo* UserInfo = UEOSManager::GetEOSManager()->GetUserInfo();
-	UserInfo->QueryUserInfoByAccountId(Data->TargetUserId);
+	UEOSPresence* EOSPresenceInfo = UEOSManager::GetPresence();
 
-	SetPresence(Data->TargetUserId);
+	FBPCrossPlayInfo* CrossPlayFriendInfo = (FBPCrossPlayInfo*)(Data->ClientData);
+	UpdatePresenceStatus(*CrossPlayFriendInfo, Data->TargetUserId);
 
+	EOSPresenceInfo->OnFriendPresenceQueryComplete.Broadcast(*CrossPlayFriendInfo);
 }
+
+void UEOSPresence::UpdatePresenceStatus(FBPCrossPlayInfo& InFriendInfo, FEpicAccountId TargetId)
+{
+	EOS_HPresence PresenceHandle = EOS_Platform_GetPresenceInterface(UEOSManager::GetPlatformHandle());
+
+	EOS_Presence_CopyPresenceOptions CopyOptions;
+	CopyOptions.ApiVersion = EOS_PRESENCE_COPYPRESENCE_API_LATEST;
+	CopyOptions.LocalUserId = UEOSManager::GetAuthentication()->GetEpicAccountId();
+	CopyOptions.TargetUserId = TargetId;
+
+	EOS_Presence_Info* PresenceData = nullptr;
+	EOS_EResult ResultCode = EOS_Presence_CopyPresence(PresenceHandle, &CopyOptions, &PresenceData);
+
+	if (ResultCode != EOS_EResult::EOS_Success)
+	{
+		UE_LOG(UEOSLog, Warning, TEXT("[EOS SDK | Plugin] Error when getting presence status: %s"), *UEOSCommon::EOSResultToString(ResultCode));
+	}
+
+
+	FName Platform = FName(*FString(UTF8_TO_TCHAR(PresenceData->Platform)));
+	if (Platform == FName("Windows"))
+			InFriendInfo.PlatformType = EPlatformType::Epic;
+	else if (Platform == FName("Steam"))
+			InFriendInfo.PlatformType = EPlatformType::Steam;
+		//So on and so forth..
+
+	InFriendInfo.Presence = (EPresenceStatus)PresenceData->Status;
+
+	//TODO - Figure out what these are and if there are useful to presence data
+	//InFriendInfo.Application = FString(UTF8_TO_TCHAR(PresenceData->ProductId));
+	//PresenceInfo.RichText = FStringUtils::Widen(PresenceInfo->RichText);
+
+	EOS_Presence_Info_Release(PresenceData);
+}
+
 
 
 void UEOSPresence::SetPresence(FEpicAccountId TargetUserId)
@@ -105,7 +122,7 @@ void UEOSPresence::SetPresenceCallback(const EOS_Presence_SetPresenceCallbackInf
 }
 
 
-void UEOSPresence::RequestFriendPresences()
+void UEOSPresence::SubscribeToFriendPresenceUpdates()
 {
 	EOS_HPresence PresenceHandle = EOS_Platform_GetPresenceInterface(UEOSManager::GetPlatformHandle());
 	EOS_Presence_AddNotifyOnPresenceChangedOptions Options;

@@ -20,10 +20,20 @@ enum class EFriendStatus : uint8
 	Friends = 3,
 };
 
+UENUM(BlueprintType)
+enum class EReason : uint8
+{
+	Failure = 0,
+	Success = 1,
+	Unknown = 2
+};
+
 DECLARE_DYNAMIC_MULTICAST_DELEGATE( FOnFriendsRefreshed );
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFriendInviteSent);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFriendInviteRejected);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFriendInviteAccepted);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE( FOnFriendInviteSent );
+DECLARE_DYNAMIC_MULTICAST_DELEGATE( FOnFriendInviteRejected );
+DECLARE_DYNAMIC_MULTICAST_DELEGATE( FOnFriendInviteAccepted );
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam( FOnFriendActionError , const FString &, Reason);
+
 
 UCLASS()
 class UEOS_API UEOSFriends : public UObject
@@ -77,22 +87,10 @@ public:
 		FOnFriendsRefreshed		OnFriendsRefreshed;
 
 	/**
-	 * Fires when a call to RefreshFriends errors
-	 */
-	UPROPERTY( BlueprintAssignable, Category = "UEOS|Friends" )
-		FOnFriendsRefreshed		OnRefreshFriendsError;
-
-	/**
 	 * Fires when a call to SendInvite succeeds
 	 */
 	UPROPERTY(BlueprintAssignable, Category = "UEOS|Friends")
 		FOnFriendInviteSent		OnFriendInviteSent;
-
-	/**
-	 * Fires when a call to SendInvite errors
-	 */
-	UPROPERTY(BlueprintAssignable, Category = "UEOS|Friends")
-		FOnFriendInviteSent		OnFriendSendInviteError;
 	
 	/**
 	 * Fires when a call to AcceptInvite succeeds
@@ -101,22 +99,16 @@ public:
 		FOnFriendInviteAccepted		OnFriendInviteAccepted;
 
 	/**
-	 * Fires when a call to AcceptInvite errors
-	 */
-	UPROPERTY(BlueprintAssignable, Category = "UEOS|Friends")
-		FOnFriendInviteAccepted		OnFriendAcceptInviteError;
-
-	/**
 	 * Fires when a call to RejectInvite succeeds
 	 */
 	UPROPERTY(BlueprintAssignable, Category = "UEOS|Friends")
 		FOnFriendInviteRejected		OnFriendInviteRejected;
 
 	/**
-	 * Fires when a call to RejectInvite errors
+	 * Fires when a call to RefreshFriends/AcceptInvite/RejectInvite/etc. errors
 	 */
 	UPROPERTY(BlueprintAssignable, Category = "UEOS|Friends")
-		FOnFriendInviteRejected		OnFriendRejectedError;
+		FOnFriendActionError		OnFriendActionError;
 
 private:
 

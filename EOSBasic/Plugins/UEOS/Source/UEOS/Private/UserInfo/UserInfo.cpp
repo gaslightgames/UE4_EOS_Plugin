@@ -18,8 +18,8 @@ void UEOSUserInfo::QueryUserInfoByAccountId( const FEpicAccountId& EpicAccountId
 	EOS_HUserInfo UserInfoHandle = EOS_Platform_GetUserInfoInterface(UEOSManager::GetPlatformHandle());
 	EOS_UserInfo_QueryUserInfoOptions Options = {};
 	Options.ApiVersion = EOS_USERINFO_QUERYUSERINFO_API_LATEST;
-	Options.LocalUserId = UEOSManager::GetEOSManager()->GetAuthentication()->GetEpicAccountId().EpicAccountId;
-	Options.TargetUserId = EpicAccountId.EpicAccountId;
+	Options.LocalUserId = UEOSManager::GetEOSManager()->GetAuthentication()->GetEpicAccountId();
+	Options.TargetUserId = EpicAccountId;
 
 	EOS_UserInfo_QueryUserInfo( UserInfoHandle, &Options, nullptr, QueryUserInfoCallback );
 }
@@ -63,9 +63,10 @@ void UEOSUserInfo::QueryUserInfoCallback( const EOS_UserInfo_QueryUserInfoCallba
 	{
 		if( EOSUserInfo != nullptr )
 		{
-			FEpicAccountId UpdatedEpicAccountId = FEpicAccountId(Data->TargetUserId);
-			UpdatedEpicAccountId.DisplayName = GetDisplayName(Data->TargetUserId);
-			EOSUserInfo->OnUserInfoRetreived.Broadcast(UpdatedEpicAccountId);
+			if (UEOSManager::GetUserInfo()->OnUserInfoRetreived.IsBound())
+			{
+				EOSUserInfo->OnUserInfoRetreived.Broadcast(FEpicAccountId(Data->TargetUserId));
+			}
 		}
 	}
 	else
@@ -73,9 +74,10 @@ void UEOSUserInfo::QueryUserInfoCallback( const EOS_UserInfo_QueryUserInfoCallba
 		UE_LOG( UEOSLog, Warning, TEXT( "[EOS SDK | Plugin] Error when querying user info: %s" ), *UEOSCommon::EOSResultToString( Data->ResultCode ) );
 		if( EOSUserInfo != nullptr )
 		{
-			FEpicAccountId UpdatedEpicAccountId = FEpicAccountId(Data->TargetUserId);
-			UpdatedEpicAccountId.DisplayName = GetDisplayName(Data->TargetUserId);
-			EOSUserInfo->OnUserInfoError.Broadcast(UpdatedEpicAccountId);
+			if (UEOSManager::GetUserInfo()->OnUserInfoError.IsBound())
+			{
+				EOSUserInfo->OnUserInfoError.Broadcast(FEpicAccountId(Data->TargetUserId));
+			}
 		}
 	}
 }

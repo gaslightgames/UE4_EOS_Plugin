@@ -9,7 +9,7 @@
 #include "eos_sdk.h"
 #include "eos_userinfo.h"
 
-// EOS Pluin Includes
+// EOS Plugin Includes
 #include "Authentication/Authentication.h"
 
 #include "UserInfo.generated.h"

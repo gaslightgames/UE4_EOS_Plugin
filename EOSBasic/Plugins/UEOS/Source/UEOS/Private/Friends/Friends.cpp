@@ -26,20 +26,25 @@ void UEOSFriends::QueryFriends()
 
 void UEOSFriends::QueryFriendsCallback( const EOS_Friends_QueryFriendsCallbackInfo* Data )
 {
-	check( Data != nullptr );
-
-	UEOSFriends* EOSFriends = UEOSManager::GetFriends();
-	if( EOSFriends != nullptr )
-	{
-		if( Data->ResultCode == EOS_EResult::EOS_Success )
+	if (Data != nullptr) {
+		UEOSFriends* EOSFriends = UEOSManager::GetFriends();
+		if (EOSFriends != nullptr)
 		{
-			EOSFriends->OnFriendsRefreshed.Broadcast();
+			if (Data->ResultCode == EOS_EResult::EOS_Success)
+			{
+				EOSFriends->OnFriendsRefreshed.Broadcast();
+			}
+			else
+			{
+				FString CallbackError = FString::Printf(TEXT("[EOS SDK | Plugin] Error %s when querying friends: %s"), *UEOSCommon::EOSResultToString(Data->ResultCode));
+				//NOTE: Leave it to blueprint to log the warning
+				if (EOSFriends->OnFriendActionError.IsBound()) {
+					EOSFriends->OnFriendActionError.Broadcast(CallbackError);
+				}
+			}
 		}
-		else
-		{
-			UE_LOG( UEOSLog, Warning, TEXT( "[EOS SDK | Plugin] Error when querying friends: %s" ), *UEOSCommon::EOSResultToString( Data->ResultCode ) );
-			EOSFriends->OnRefreshFriendsError.Broadcast();
-		}
+	} else {
+		UE_LOG(UEOSLog, Error, TEXT("%s [EOS SDK | Plugin] data is invalid!"), __FUNCTIONW__);
 	}
 }
 
@@ -51,6 +56,7 @@ int32 UEOSFriends::GetFriendsCount()
 	Options.LocalUserId = UEOSManager::GetEOSManager()->GetAuthentication()->GetEpicAccountId();
 
 	int32_t FriendCount = EOS_Friends_GetFriendsCount(FriendsHandle, &Options);
+	UE_LOG(UEOSLog, Log, TEXT("[EOS SDK | Plugin] Number of Friends is: %d"), FriendCount);
 	
 	return FriendCount;
 }
@@ -84,21 +90,29 @@ void UEOSFriends::SendInvite(const FEpicAccountId& FriendInfo)
 
 void UEOSFriends::SendInviteCallback(const EOS_Friends_SendInviteCallbackInfo* Data)
 {
-	check(Data != nullptr);
+	if (Data != nullptr) {
 
-	UEOSFriends* EOSFriends = UEOSManager::GetFriends();
-	if (EOSFriends != nullptr)
-	{
-		if (Data->ResultCode == EOS_EResult::EOS_Success)
+		UEOSFriends* EOSFriends = UEOSManager::GetFriends();
+		if (EOSFriends != nullptr)
 		{
-			EOSFriends->OnFriendInviteSent.Broadcast();
+			if (Data->ResultCode == EOS_EResult::EOS_Success)
+			{
+				if (EOSFriends->OnFriendInviteSent.IsBound()) {
+					EOSFriends->OnFriendInviteSent.Broadcast();
+				}
+			}
+			else
+			{
+				FString DisplayName = UEOSManager::GetEOSManager()->GetUserInfo()->GetDisplayName(Data->TargetUserId);
+				FString CallbackError = FString::Printf(TEXT("[EOS SDK | Plugin] Error %s when sending invite to %s"), *UEOSCommon::EOSResultToString(Data->ResultCode), * DisplayName);
+				//NOTE: Leave it to blueprint to log the warning
+				if (EOSFriends->OnFriendActionError.IsBound()) {
+					EOSFriends->OnFriendActionError.Broadcast(CallbackError);
+				}
+			}
 		}
-		else
-		{
-			FString DisplayName = UEOSManager::GetEOSManager()->GetUserInfo()->GetDisplayName(Data->TargetUserId);
-			UE_LOG(UEOSLog, Warning, TEXT("[EOS SDK | Plugin] Error %s when sending invite to %s"), *UEOSCommon::EOSResultToString(Data->ResultCode), *DisplayName);
-			EOSFriends->OnFriendSendInviteError.Broadcast();
-		}
+	} else {
+		UE_LOG(UEOSLog, Error, TEXT("%s [EOS SDK | Plugin] data is invalid!"), __FUNCTIONW__);
 	}
 }
 
@@ -117,21 +131,27 @@ void UEOSFriends::AcceptInvite(const FEpicAccountId& FriendInfo)
 
 void UEOSFriends::AcceptInviteCallback(const EOS_Friends_AcceptInviteCallbackInfo* Data)
 {
-	check(Data != nullptr);
+	if (Data != nullptr) {
 
-	UEOSFriends* EOSFriends = UEOSManager::GetFriends();
-	if (EOSFriends != nullptr)
-	{
-		if (Data->ResultCode == EOS_EResult::EOS_Success)
+		UEOSFriends* EOSFriends = UEOSManager::GetFriends();
+		if (EOSFriends != nullptr)
 		{
-			EOSFriends->OnFriendInviteAccepted.Broadcast();
+			if (Data->ResultCode == EOS_EResult::EOS_Success)
+			{
+				EOSFriends->OnFriendInviteAccepted.Broadcast();
+			}
+			else
+			{
+				FString DisplayName = UEOSManager::GetEOSManager()->GetUserInfo()->GetDisplayName(Data->TargetUserId);
+				FString CallbackError = FString::Printf(TEXT("[EOS SDK | Plugin] Error %s when accepting invite from friend: %s"), *UEOSCommon::EOSResultToString(Data->ResultCode), *DisplayName);
+				//NOTE: Leave it to blueprint to log the warning
+				if (EOSFriends->OnFriendActionError.IsBound()) {
+					EOSFriends->OnFriendActionError.Broadcast(CallbackError);
+				}
+			}
 		}
-		else
-		{
-			FString DisplayName = UEOSManager::GetEOSManager()->GetUserInfo()->GetDisplayName(Data->TargetUserId);
-			UE_LOG(UEOSLog, Warning, TEXT("[EOS SDK | Plugin] Error %s when accepting invite from friend: %s"), *UEOSCommon::EOSResultToString(Data->ResultCode), *DisplayName);
-			EOSFriends->OnFriendAcceptInviteError.Broadcast();
-		}
+	} else {
+		UE_LOG(UEOSLog, Error, TEXT("%s [EOS SDK | Plugin] data is invalid!"), __FUNCTIONW__);
 	}
 }
 
@@ -149,21 +169,26 @@ void UEOSFriends::RejectInvite(const FEpicAccountId& FriendInfo)
 
 void UEOSFriends::RejectInviteCallback(const EOS_Friends_RejectInviteCallbackInfo* Data)
 {
-	check(Data != nullptr);
-
-	UEOSFriends* EOSFriends = UEOSManager::GetFriends();
-	if (EOSFriends != nullptr)
-	{
-		if (Data->ResultCode == EOS_EResult::EOS_Success)
+	if (Data != nullptr) {
+		UEOSFriends* EOSFriends = UEOSManager::GetFriends();
+		if (EOSFriends != nullptr)
 		{
-			EOSFriends->OnFriendInviteRejected.Broadcast();
+			if (Data->ResultCode == EOS_EResult::EOS_Success)
+			{
+				EOSFriends->OnFriendInviteRejected.Broadcast();
+			}
+			else
+			{
+				FString DisplayName = UEOSManager::GetEOSManager()->GetUserInfo()->GetDisplayName(Data->TargetUserId);
+				FString CallbackError = FString::Printf(TEXT("[EOS SDK | Plugin] Error %s when rejecting invite from friend: %s"), *UEOSCommon::EOSResultToString(Data->ResultCode), *DisplayName);
+				//NOTE: Leave it to blueprint to log the warning
+				if (EOSFriends->OnFriendActionError.IsBound()) {
+					EOSFriends->OnFriendActionError.Broadcast(CallbackError);
+				}
+			}
 		}
-		else
-		{
-			FString DisplayName = UEOSManager::GetEOSManager()->GetUserInfo()->GetDisplayName(Data->TargetUserId);
-			UE_LOG(UEOSLog, Warning, TEXT("[EOS SDK | Plugin] Error %s when rejecting invite from friend: %s"), *UEOSCommon::EOSResultToString(Data->ResultCode), *DisplayName);
-			EOSFriends->OnFriendRejectedError.Broadcast();
-		}
+	} else {
+		 UE_LOG(UEOSLog, Error, TEXT("%s [EOS SDK | Plugin] data is invalid!"), __FUNCTIONW__);
 	}
 }
 /* =================== END FRIEND MESSAGING FUNCTIONS ============================= */

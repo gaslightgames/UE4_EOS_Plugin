@@ -46,6 +46,7 @@ struct UEOS_API FEpicAccountId
 	FEpicAccountId(EOS_EpicAccountId InAccountId)
 	: EpicAccountId(InAccountId)
 	{
+		AccountIdAsString = ToString();
 	};
 
 	FEpicAccountId() = default;
@@ -82,6 +83,9 @@ struct UEOS_API FEpicAccountId
 		return EpicAccountId;
 	}
 
+	UPROPERTY(BlueprintReadOnly)
+		FString AccountIdAsString;
+	
 	/**
 	* Prints out account ID as hex.
 	*/
@@ -98,9 +102,6 @@ struct UEOS_API FEpicAccountId
 	/** The EOS SDK matching Account Id. */
 	EOS_EpicAccountId			EpicAccountId;
 
-	UPROPERTY(BlueprintReadOnly, Category = "EpicAccountId")
-		FString DisplayName;
-	
 };
 
 
