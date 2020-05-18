@@ -5,6 +5,7 @@
 // EOS Includes
 #include "UEOSCommon.h"
 #include "Config/UEOSConfig.h"
+#include "Presence/Presence.h"
 
 #include "UEOSManager.generated.h"
 
@@ -14,8 +15,7 @@ class UEOSMetrics;
 class UEOSFriends;
 class UEOSUserInfo;
 
-
-UCLASS()
+UCLASS(BlueprintType)
 class UEOS_API UEOSManager : public UObject
 {
 	GENERATED_BODY()
@@ -109,6 +109,16 @@ public:
 		static UEOSUserInfo*					GetUserInfo();
 
 
+	/**
+	 * Attempts to return the current Presence object.
+	*
+	* @return The current Presence object to return, or nullptr if not valid.
+	*/
+
+	UFUNCTION(BlueprintCallable, Category = "UEOS|Manager")
+		static UEOSPresence* GetPresence();
+
+
 	/// CONFIG GETTERS
 
 	/**
@@ -168,6 +178,7 @@ public:
 	UFUNCTION( BlueprintCallable, Category = "UEOS|Manager" )
 		bool							       	UpdateEOS();
 
+
 protected:
 
 	// --------------------------------------------------------------
@@ -193,6 +204,10 @@ protected:
 	UPROPERTY()
 		bool									bEOSShutdown;
 
+	/** The current Presence object. */
+	UPROPERTY()
+		UEOSPresence* Presence;
+	
 	/** The current Authentication object. */
 	UPROPERTY()
 		UEOSAuthentication*						Authentication;

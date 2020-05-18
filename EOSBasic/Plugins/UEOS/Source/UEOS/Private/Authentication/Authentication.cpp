@@ -3,7 +3,6 @@
 #include "Authentication/Authentication.h"
 
 #include "UEOSModule.h"
-#include "UEOSCommon.h"
 #include "UEOSManager.h"
 
 #include <string>
@@ -24,13 +23,6 @@ void UEOSAuthentication::Login( ELoginMode LoginMode, FString UserId, FString Us
 	{
 		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Can't Log In - EOS SDK Not Initialized!." ) );
 		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
-
-		// Broadcast the Login Failure Delegate.
-		if( UEOSManager::GetAuthentication()->OnUserLoginFail.IsBound() )
-		{
-			UEOSManager::GetAuthentication()->OnUserLoginFail.Broadcast();
-		}
-
 		return;
 	}
 
@@ -40,13 +32,6 @@ void UEOSAuthentication::Login( ELoginMode LoginMode, FString UserId, FString Us
 	{
 		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Can't Log In - Failed to get Authentication Handle." ) );
 		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
-
-		// Broadcast the Login Failure Delegate.
-		if( UEOSManager::GetAuthentication()->OnUserLoginFail.IsBound() )
-		{
-			UEOSManager::GetAuthentication()->OnUserLoginFail.Broadcast();
-		}
-
 		return;
 	}
 
@@ -59,45 +44,57 @@ void UEOSAuthentication::Login( ELoginMode LoginMode, FString UserId, FString Us
 
 	switch( LoginMode )
 	{
-	case ELoginMode::LM_IDPassword:
-	{
-		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In as User Id: %s." ), *UserId );
-		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
-		Credentials.Id = TCHAR_TO_UTF8( *UserId );
-		Credentials.Token = TCHAR_TO_UTF8( *UserToken );
-		Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_Password;
-		break;
-	}
-	case ELoginMode::LM_ExchangeCode:
-	{
-		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In with Exchange Code." ) );
-		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
-		Credentials.Token = TCHAR_TO_UTF8( *UserId );
-		Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_ExchangeCode;
-		break;
-	}
-	case ELoginMode::LM_PinGrant:
-	{
-		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In with Pin Grant." ) );
-		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
-		Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_DeviceCode;
-		break;
-	}
-	case ELoginMode::LM_DevTool:
-	{
-		MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In with Dev Auth Tool | ID: %s | Token: %s." ), *UserId, *UserToken );
-		UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
-		Credentials.Id = TCHAR_TO_UTF8( *UserId );
-		Credentials.Token = TCHAR_TO_UTF8( *UserToken );
-		Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_Developer;
+		case ELoginMode::LM_IDPassword:
+		{
+			MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In as User Id: %s." ), *UserId );
+			UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+			Credentials.Id = TCHAR_TO_UTF8( *UserId );
+			Credentials.Token = TCHAR_TO_UTF8( *UserToken );
+			Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_Password;
+			break;
+		}
+		case ELoginMode::LM_ExchangeCode:
+		{
+			MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In with Exchange Code." ) );
+			UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+			Credentials.Token = TCHAR_TO_UTF8( *UserId );
+			Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_ExchangeCode;
+			break;
+		}
+		case ELoginMode::LM_PinGrant:
+		{
+			MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In with Pin Grant." ) );
+			UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+			Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_DeviceCode;
+			break;
+		}
+		case ELoginMode::LM_DevTool:
+		{
+			MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Logging In with Dev Auth Tool | ID: %s | Token: %s." ), *UserId, *UserToken );
+			UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
+			Credentials.Id = TCHAR_TO_UTF8( *UserId );
+			Credentials.Token = TCHAR_TO_UTF8( *UserToken );
+			Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_Developer;
 
-		break;
-	}
+			break;
+		}
+
+		case ELoginMode::LM_AccountPortal:
+		{
+			MessageText = FString::Printf(TEXT("[EOS SDK | Plugin] Logging In with Account Portal Tool | ID: %s | Token: %s."), *UserId, *UserToken);
+			UE_LOG(UEOSLog, Warning, TEXT("%s"), *MessageText);
+			Credentials.Id = TCHAR_TO_UTF8(*UserId);
+			Credentials.Token = TCHAR_TO_UTF8(*UserToken);
+			Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_AccountPortal;
+
+			break;
+		}
 	}
 
 	LoginOptions.Credentials = &Credentials;
 
 	EOS_Auth_Login( AuthHandle, &LoginOptions, NULL, LoginCompleteCallback );
+
 }
 
 void UEOSAuthentication::Logout()
@@ -124,7 +121,7 @@ bool UEOSAuthentication::GetAuthTokenCopy( EOS_Auth_Token** OutToken )
 	EOS_Auth_CopyUserAuthTokenOptions TokenOpt;
 	TokenOpt.ApiVersion = EOS_AUTH_COPYUSERAUTHTOKEN_API_LATEST;
 
-	EOS_EResult Result = EOS_Auth_CopyUserAuthToken( AuthHandle, &TokenOpt, UEOSManager::GetAuthentication()->EpicAccountId, OutToken );
+	EOS_EResult Result = EOS_Auth_CopyUserAuthToken( AuthHandle, &TokenOpt, EpicAccountId, OutToken );
 	return Result == EOS_EResult::EOS_Success;
 }
 
@@ -153,7 +150,7 @@ FString UEOSAuthentication::AccountIDToString( EOS_EpicAccountId InAccountId )
 		return returnValue;
 	}
 
-	FString MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Epic Account Id To String Error: " ), *UEOSCommon::EOSResultToString( Result ) );
+	FString MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] Epic Account Id To String Error: %s" ), *UEOSCommon::EOSResultToString( Result ) );
 	UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
 
 	return returnValue;
@@ -175,11 +172,11 @@ void UEOSAuthentication::LoginCompleteCallback( const EOS_Auth_LoginCallbackInfo
 		const int32_t AccountsCount = EOS_Auth_GetLoggedInAccountsCount( AuthHandle );
 		for( int32_t AccountIdx = 0; AccountIdx < AccountsCount; ++AccountIdx )
 		{
-			FEpicAccountId EpicAccountId;
-			EpicAccountId = EOS_Auth_GetLoggedInAccountByIndex( AuthHandle, AccountIdx );
+			FEpicAccountId AccountId;
+			AccountId = EOS_Auth_GetLoggedInAccountByIndex( AuthHandle, AccountIdx );
 
 			EOS_ELoginStatus LoginStatus;
-			LoginStatus = EOS_Auth_GetLoginStatus( AuthHandle, UEOSManager::GetAuthentication()->EpicAccountId );
+			LoginStatus = EOS_Auth_GetLoginStatus( AuthHandle, UEOSManager::GetAuthentication()->GetEpicAccountId());
 
 			MessageText = FString::Printf( TEXT( "[EOS SDK | Plugin] AccountIdx: %d Status: %d" ), AccountIdx, (int32_t)LoginStatus );
 			UE_LOG( UEOSLog, Warning, TEXT( "%s" ), *MessageText );
@@ -261,15 +258,15 @@ FString FEpicAccountId::ToString() const
 {
 	static char TempBuffer[EOS_EPICACCOUNTID_MAX_LENGTH];
 	int32_t TempBufferSize = sizeof( TempBuffer );
-	EOS_EpicAccountId_ToString( EpicAccountId, TempBuffer, &TempBufferSize );
+	EOS_EpicAccountId_ToString(EpicAccountId, TempBuffer, &TempBufferSize );
 	FString returnValue( TempBuffer );
 	return returnValue;
 }
 
-FEpicAccountId FEpicAccountId::FromString( const FString& AccountId )
+FEpicAccountId FEpicAccountId::FromString(const FString& AccountId)
 {
-	EOS_EpicAccountId Account = EOS_EpicAccountId_FromString( TCHAR_TO_ANSI( *AccountId ) );
-	return FEpicAccountId( Account );
+	EOS_EpicAccountId Account = EOS_EpicAccountId_FromString(TCHAR_TO_ANSI(*AccountId));
+	return FEpicAccountId(Account);
 }
 
 FEpicAccountId::operator bool() const

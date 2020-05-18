@@ -9,23 +9,13 @@
 #include "UEOSManager.h"
 
 UEOSUserInfo::UEOSUserInfo()
-	: UserInfoHandle( NULL )
 {
 
-}
-
-void UEOSUserInfo::Init()
-{
-	UserInfoHandle = EOS_Platform_GetUserInfoInterface( UEOSManager::GetPlatformHandle() );
 }
 
 void UEOSUserInfo::QueryUserInfoByAccountId( const FEpicAccountId& EpicAccountId )
 {
-	if( UserInfoHandle == nullptr )
-	{
-		Init();
-	}
-
+	EOS_HUserInfo UserInfoHandle = EOS_Platform_GetUserInfoInterface(UEOSManager::GetPlatformHandle());
 	EOS_UserInfo_QueryUserInfoOptions Options = {};
 	Options.ApiVersion = EOS_USERINFO_QUERYUSERINFO_API_LATEST;
 	Options.LocalUserId = UEOSManager::GetEOSManager()->GetAuthentication()->GetEpicAccountId().EpicAccountId;
@@ -36,6 +26,7 @@ void UEOSUserInfo::QueryUserInfoByAccountId( const FEpicAccountId& EpicAccountId
 
 FString UEOSUserInfo::GetDisplayName( const FEpicAccountId& EpicAccountId )
 {
+	EOS_HUserInfo UserInfoHandle = EOS_Platform_GetUserInfoInterface(UEOSManager::GetPlatformHandle());
 	EOS_UserInfo_CopyUserInfoOptions Options;
 	Options.ApiVersion = EOS_USERINFO_COPYUSERINFO_API_LATEST;
 	Options.LocalUserId = UEOSManager::GetEOSManager()->GetAuthentication()->GetEpicAccountId();
@@ -72,7 +63,9 @@ void UEOSUserInfo::QueryUserInfoCallback( const EOS_UserInfo_QueryUserInfoCallba
 	{
 		if( EOSUserInfo != nullptr )
 		{
-			EOSUserInfo->OnUserInfoRetreived.Broadcast( FEpicAccountId( Data->TargetUserId ) );
+			FEpicAccountId UpdatedEpicAccountId = FEpicAccountId(Data->TargetUserId);
+			UpdatedEpicAccountId.DisplayName = GetDisplayName(Data->TargetUserId);
+			EOSUserInfo->OnUserInfoRetreived.Broadcast(UpdatedEpicAccountId);
 		}
 	}
 	else
@@ -80,7 +73,9 @@ void UEOSUserInfo::QueryUserInfoCallback( const EOS_UserInfo_QueryUserInfoCallba
 		UE_LOG( UEOSLog, Warning, TEXT( "[EOS SDK | Plugin] Error when querying user info: %s" ), *UEOSCommon::EOSResultToString( Data->ResultCode ) );
 		if( EOSUserInfo != nullptr )
 		{
-			EOSUserInfo->OnUserInfoError.Broadcast( FEpicAccountId( Data->TargetUserId ) );
+			FEpicAccountId UpdatedEpicAccountId = FEpicAccountId(Data->TargetUserId);
+			UpdatedEpicAccountId.DisplayName = GetDisplayName(Data->TargetUserId);
+			EOSUserInfo->OnUserInfoError.Broadcast(UpdatedEpicAccountId);
 		}
 	}
 }

@@ -14,7 +14,6 @@
 
 #include "UserInfo.generated.h"
 
-
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam( FOnUserInfoRetreived, const FEpicAccountId&, EpicAccountId );
 
 UCLASS()
@@ -25,8 +24,6 @@ class UEOS_API UEOSUserInfo : public UObject
 public:
 
 	UEOSUserInfo();
-
-	void Init();
 
 	/**
 	 * Begins an async process to get User Info for the provided User.
@@ -44,8 +41,7 @@ public:
 	 *
 	 * @param EpicAccountId The target Epic Account ID to use to query for the Display Name.
 	 */
-	UFUNCTION( BlueprintCallable, Category = "UEOS|User Info" )
-		FString					GetDisplayName( const FEpicAccountId& EpicAccountId );
+	static FString					GetDisplayName( const FEpicAccountId& EpicAccountId );
 
 	/**
 	* Event fired when User Info has been retrieved.
@@ -67,6 +63,4 @@ private:
 
 	static void					QueryUserInfoCallback( const EOS_UserInfo_QueryUserInfoCallbackInfo* Data );
 
-	/** Handle for the UserInfo interface */
-	EOS_HUserInfo				UserInfoHandle;
 };

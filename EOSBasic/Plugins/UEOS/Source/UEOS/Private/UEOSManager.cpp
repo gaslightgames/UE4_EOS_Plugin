@@ -429,6 +429,23 @@ UEOSUserInfo* UEOSManager::GetUserInfo()
 	return UEOSManager::EOSManager->UserInfo;
 }
 
+UEOSPresence* UEOSManager::GetPresence()
+{
+	if (UEOSManager::EOSManager->Presence == nullptr)
+	{
+		UEOSManager::EOSManager->Presence = NewObject<UEOSPresence>(UEOSManager::EOSManager);
+	}
+
+	if (UEOSManager::EOSManager->Presence == nullptr)
+	{
+		// Failed to instantiate the UserInfo object.
+		FString MessageText = FString::Printf(TEXT("[EOS SDK | Plugin] Failed to create Presence Object."));
+		UE_LOG(UEOSLog, Warning, TEXT("%s"), *MessageText);
+	}
+
+	return UEOSManager::EOSManager->Presence;
+}
+
 void UEOSManager::EOSSDKLoggingCallback( const EOS_LogMessage* InMsg )
 {
 	FString Message( InMsg->Message );
