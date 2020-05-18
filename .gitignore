@@ -104,3 +104,6 @@ EOSBasic/Plugins/*/Intermediate/*
 EOSBasic/DerivedDataCache/*
 Tools
 /EOSBasic/Config/DefaultGame_Local.ini
+
+# Credentials
+EOSBasic/Credentials/*

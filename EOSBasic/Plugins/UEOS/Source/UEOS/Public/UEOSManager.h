@@ -224,6 +224,11 @@ protected:
 	UPROPERTY()
 		UEOSUserInfo*							UserInfo;
 
+protected:
+
+	/* Whether or not we want to read from the Config directory or read from text files of the secret keys. */
+		bool									bUseConfig;
+
 private:
 
 	/**

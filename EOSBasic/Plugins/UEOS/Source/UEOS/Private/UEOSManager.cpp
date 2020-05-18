@@ -24,6 +24,7 @@
 
 // STD Includes
 #include <string>
+#include "TextReaderComponent.h"
 
 #define ALLOW_EOS_IN_PIE 0
 
@@ -38,6 +39,7 @@ UEOSManager::UEOSManager()
 	, Metrics( nullptr )
 	, Friends( nullptr )
 	, UserInfo( nullptr )
+	, bUseConfig( false )
 {
 	
 }
@@ -186,9 +188,29 @@ EEOSResults UEOSManager::InitEOS()
 	{
 		PlatformOptions.bIsServer = ( EOSConfig->bIsServer ) ? EOS_TRUE : EOS_FALSE;
 
-		std::string ProductId = TCHAR_TO_UTF8( *EOSConfig->ProductId );
-		std::string SandboxId = TCHAR_TO_UTF8( *EOSConfig->SandboxId );
-		std::string DeploymentId = TCHAR_TO_UTF8( *EOSConfig->DeploymentId );
+		UTextReaderComponent* TextReader = NewObject<UTextReaderComponent>();
+
+		UE_LOG(UEOSLog, Log, TEXT("HERE"));
+
+		std::string ProductId = "";
+		std::string SandboxId = "";
+		std::string DeploymentId = "";
+		if (bUseConfig)
+		{
+			ProductId = TCHAR_TO_UTF8(*EOSConfig->ProductId);
+			SandboxId = TCHAR_TO_UTF8(*EOSConfig->SandboxId);
+			DeploymentId = TCHAR_TO_UTF8(*EOSConfig->DeploymentId);
+		}
+		else {
+
+			FString ReadProductId = TextReader->ReadFile("Credentials/ProductId.txt");
+			FString ReadSandboxId = TextReader->ReadFile("Credentials/SandboxId.txt");
+			FString ReadDeploymentId = TextReader->ReadFile("Credentials/DeploymentId.txt");
+
+			ProductId = TCHAR_TO_UTF8(*ReadProductId);
+			SandboxId = TCHAR_TO_UTF8(*ReadSandboxId);
+			DeploymentId = TCHAR_TO_UTF8(*ReadDeploymentId);
+		}
 
 		if( ProductId.empty() )
 		{
@@ -217,9 +239,21 @@ EEOSResults UEOSManager::InitEOS()
 		PlatformOptions.ProductId = ProductId.c_str();
 		PlatformOptions.SandboxId = SandboxId.c_str();
 		PlatformOptions.DeploymentId = DeploymentId.c_str();
-		
-		std::string ClientId = TCHAR_TO_UTF8( *EOSConfig->ClientId );
-		std::string ClientSecret = TCHAR_TO_UTF8( *EOSConfig->ClientSecret );
+
+		std::string ClientId = "";
+		std::string ClientSecret = "";
+		if (bUseConfig)
+		{
+			ClientId = TCHAR_TO_UTF8(*EOSConfig->ClientId);
+			ClientSecret = TCHAR_TO_UTF8(*EOSConfig->ClientSecret);
+		} else
+		{
+			FString ReadClientId = TextReader->ReadFile("Credentials/ClientId.txt");
+			FString ReadClientSecret = TextReader->ReadFile("Credentials/ClientSecretId.txt");
+			ClientId = TCHAR_TO_UTF8(*ReadClientId);
+			ClientSecret = TCHAR_TO_UTF8(*ReadClientSecret);
+		}
+
 
 		PlatformOptions.ClientCredentials.ClientId = ( EOSConfig->ClientId.IsEmpty() ) ? nullptr : ClientId.c_str();
 		PlatformOptions.ClientCredentials.ClientSecret = ( EOSConfig->ClientSecret.IsEmpty() ) ? nullptr : ClientSecret.c_str();
