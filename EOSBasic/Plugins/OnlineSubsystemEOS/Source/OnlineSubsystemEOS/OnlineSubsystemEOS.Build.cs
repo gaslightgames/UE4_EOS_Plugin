@@ -3,9 +3,9 @@
 using UnrealBuildTool;
 using System.IO;
 
-public class UEOS : ModuleRules
+public class OnlineSubsystemEOS : ModuleRules
 {
-    public UEOS( ReadOnlyTargetRules Target ) : base( Target )
+    public OnlineSubsystemEOS( ReadOnlyTargetRules Target ) : base( Target )
     {
         PCHUsage = ModuleRules.PCHUsageMode.UseExplicitOrSharedPCHs;
         PublicDefinitions.Add( "EOS_LIB=1" );
@@ -32,7 +32,7 @@ public class UEOS : ModuleRules
         PublicDependencyModuleNames.AddRange(
             new string[]
             {
-                "Core",
+                "OnlineSubsystemUtils",
                 "EOSSDK"
             }
             );
@@ -41,11 +41,17 @@ public class UEOS : ModuleRules
         PrivateDependencyModuleNames.AddRange(
             new string[]
             {
+                "Core",
                 "CoreUObject",
+                "NetCore",
                 "Engine",
-                "Slate",
-                "SlateCore",
-                "Projects"
+                "Sockets",
+                "Voice",
+                "AudioMixer",
+                "OnlineSubsystem",
+                "Json",
+                "PacketHandler",
+                "Projects",
             }
             );
 

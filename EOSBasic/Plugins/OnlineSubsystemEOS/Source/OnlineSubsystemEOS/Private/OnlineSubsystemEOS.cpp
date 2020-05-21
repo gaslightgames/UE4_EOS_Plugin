@@ -1,0 +1,348 @@
+// Copyright (C) Gaslight Games Ltd, 2019-2020
+
+#include "OnlineSubsystemEOS.h"
+
+IOnlineSessionPtr FOnlineSubsystemEOS::GetSessionInterface() const
+{
+	return nullptr;
+}
+
+IOnlineFriendsPtr FOnlineSubsystemEOS::GetFriendsInterface() const
+{
+	return nullptr;
+}
+
+IOnlinePartyPtr FOnlineSubsystemEOS::GetPartyInterface() const
+{
+	return nullptr;
+}
+
+IOnlineGroupsPtr FOnlineSubsystemEOS::GetGroupsInterface() const
+{
+	return nullptr;
+}
+
+IOnlineSharedCloudPtr FOnlineSubsystemEOS::GetSharedCloudInterface() const
+{
+	return nullptr;
+}
+
+IOnlineUserCloudPtr FOnlineSubsystemEOS::GetUserCloudInterface() const
+{
+	return nullptr;
+}
+
+IOnlineLeaderboardsPtr FOnlineSubsystemEOS::GetLeaderboardsInterface() const
+{
+	return nullptr;
+}
+
+IOnlineVoicePtr FOnlineSubsystemEOS::GetVoiceInterface() const
+{
+	return nullptr;
+}
+
+IOnlineExternalUIPtr FOnlineSubsystemEOS::GetExternalUIInterface() const
+{
+	return nullptr;
+}
+
+IOnlineTimePtr FOnlineSubsystemEOS::GetTimeInterface() const
+{
+	return nullptr;
+}
+
+IOnlineIdentityPtr FOnlineSubsystemEOS::GetIdentityInterface() const
+{
+	return nullptr;
+}
+
+IOnlineTitleFilePtr FOnlineSubsystemEOS::GetTitleFileInterface() const
+{
+	return nullptr;
+}
+
+IOnlineEntitlementsPtr FOnlineSubsystemEOS::GetEntitlementsInterface() const
+{
+	return nullptr;
+}
+
+IOnlineStoreV2Ptr FOnlineSubsystemEOS::GetStoreV2Interface() const
+{
+	return nullptr; 
+}
+
+IOnlinePurchasePtr FOnlineSubsystemEOS::GetPurchaseInterface() const
+{
+	return nullptr;
+}
+
+IOnlineEventsPtr FOnlineSubsystemEOS::GetEventsInterface() const
+{
+	return nullptr;
+}
+
+IOnlineAchievementsPtr FOnlineSubsystemEOS::GetAchievementsInterface() const
+{
+	return nullptr;
+}
+
+IOnlineSharingPtr FOnlineSubsystemEOS::GetSharingInterface() const
+{
+	return nullptr;
+}
+
+IOnlineUserPtr FOnlineSubsystemEOS::GetUserInterface() const
+{
+	return nullptr;
+}
+
+IOnlineMessagePtr FOnlineSubsystemEOS::GetMessageInterface() const
+{
+	return nullptr;
+}
+
+IOnlinePresencePtr FOnlineSubsystemEOS::GetPresenceInterface() const
+{
+	return nullptr;
+}
+
+IOnlineChatPtr FOnlineSubsystemEOS::GetChatInterface() const
+{
+	return nullptr;
+}
+
+IOnlineStatsPtr FOnlineSubsystemEOS::GetStatsInterface() const
+{
+	return nullptr;
+}
+
+IOnlineTurnBasedPtr FOnlineSubsystemEOS::GetTurnBasedInterface() const
+{
+	return nullptr;
+}
+
+IOnlineTournamentPtr FOnlineSubsystemEOS::GetTournamentInterface() const
+{
+	return nullptr;
+}
+
+bool FOnlineSubsystemEOS::IsLocalPlayer( const FUniqueNetId& UniqueId ) const
+{
+	return false;
+}
+
+bool FOnlineSubsystemEOS::Init()
+{
+	// Attempt to initialize the SDK!
+	if( GetEOSConfigOptions() == false )
+	{
+		UE_LOG_ONLINE( Warning, TEXT( "Could not gather EOS Config Options! Falling back to another OSS." ) );
+		return false;
+	}
+
+	// Have config values, attempt to initialize the EOS SDK
+	if( InitializeSDK() == false )
+	{
+		UE_LOG_ONLINE( Warning, TEXT( "Could not initialize EOS SDK! Falling back to another OSS." ) );
+		return false;
+	}
+
+	// Initialized the SDK, attempt to get a Platform Handle
+	if( CreatePlatformHandle() == false )
+	{
+		UE_LOG_ONLINE( Warning, TEXT( "Could not create Platform Handle from EOS SDK! Falling back to another OSS." ) );
+		return false;
+	}
+
+	return true;
+}
+
+bool FOnlineSubsystemEOS::Shutdown()
+{
+	FOnlineSubsystemImpl::Shutdown();
+
+	// Attempt to end any Aysync Processes.
+
+	// Attempt to Shutdown the SDK.
+
+	return true;
+}
+
+bool FOnlineSubsystemEOS::Exec( class UWorld* InWorld, const TCHAR* Cmd, FOutputDevice& Ar )
+{
+	if( FOnlineSubsystemImpl::Exec( InWorld, Cmd, Ar ) )
+	{
+		return true;
+	}
+
+	return false;
+}
+
+bool FOnlineSubsystemEOS::IsEnabled() const
+{
+	return FOnlineSubsystemImpl::IsEnabled();
+}
+
+FString FOnlineSubsystemEOS::GetAppId() const
+{
+	return "";
+}
+
+FText FOnlineSubsystemEOS::GetOnlineServiceName() const
+{
+	return NSLOCTEXT( "OnlineSubsystemEOS", "OnlineServiceName", "EOS" );
+}
+
+bool FOnlineSubsystemEOS::Tick( float DeltaTime )
+{
+	// If valid:
+	// - Update/Tick the EOS SDK
+
+	return true;
+}
+
+bool FOnlineSubsystemEOS::GetEOSConfigOptions()
+{
+	if( GConfig->GetString( TEXT( "OnlineSubsystemEOS" ), TEXT( "ProductName" ), ProductName, GEngineIni ) == false )
+	{
+		UE_LOG_ONLINE( Warning, TEXT( "Missing ProductName key in OnlineSubsystemEOS of DefaultEngine.ini" ) );
+		return false;
+	}
+
+	if( GConfig->GetString( TEXT( "OnlineSubsystemEOS" ), TEXT( "ProductVersion" ), ProductVersion, GEngineIni ) == false )
+	{
+		UE_LOG_ONLINE( Warning, TEXT( "Missing ProductVersion key in OnlineSubsystemEOS of DefaultEngine.ini" ) );
+		return false;
+	}
+
+	if( GConfig->GetString( TEXT( "OnlineSubsystemEOS" ), TEXT( "ProductId" ), ProductId, GEngineIni ) == false )
+	{
+		UE_LOG_ONLINE( Warning, TEXT( "Missing ProductId key in OnlineSubsystemEOS of DefaultEngine.ini" ) );
+		return false;
+	}
+
+	if( GConfig->GetString( TEXT( "OnlineSubsystemEOS" ), TEXT( "SandboxId" ), SandboxId, GEngineIni ) == false )
+	{
+		UE_LOG_ONLINE( Warning, TEXT( "Missing SandboxId key in OnlineSubsystemEOS of DefaultEngine.ini" ) );
+		return false;
+	}
+
+	if( GConfig->GetString( TEXT( "OnlineSubsystemEOS" ), TEXT( "DeploymentId" ), DeploymentId, GEngineIni ) == false )
+	{
+		UE_LOG_ONLINE( Warning, TEXT( "Missing DeploymentId key in OnlineSubsystemEOS of DefaultEngine.ini" ) );
+		return false;
+	}
+
+	if( GConfig->GetString( TEXT( "OnlineSubsystemEOS" ), TEXT( "ClientId" ), ClientId, GEngineIni ) == false )
+	{
+		UE_LOG_ONLINE( Warning, TEXT( "Missing ClientId key in OnlineSubsystemEOS of DefaultEngine.ini" ) );
+		return false;
+	}
+
+	if( GConfig->GetString( TEXT( "OnlineSubsystemEOS" ), TEXT( "ClientSecret" ), ClientSecret, GEngineIni ) == false )
+	{
+		UE_LOG_ONLINE( Warning, TEXT( "Missing ClientSecret key in OnlineSubsystemEOS of DefaultEngine.ini" ) );
+		return false;
+	}
+
+	return true;
+}
+
+bool FOnlineSubsystemEOS::InitializeSDK()
+{
+	std::string ProductNameStr = TCHAR_TO_UTF8( *ProductName );
+	std::string ProductVersionStr = TCHAR_TO_UTF8( *ProductVersion );
+
+	// Init EOS SDK
+	EOS_InitializeOptions SDKOptions;
+	SDKOptions.ApiVersion = EOS_INITIALIZE_API_LATEST;
+	SDKOptions.AllocateMemoryFunction = nullptr;
+	SDKOptions.ReallocateMemoryFunction = nullptr;
+	SDKOptions.ReleaseMemoryFunction = nullptr;
+	SDKOptions.ProductName = ProductNameStr.c_str();
+	SDKOptions.ProductVersion = ProductVersionStr.c_str();
+	SDKOptions.Reserved = nullptr;
+	SDKOptions.SystemInitializeOptions = nullptr;
+
+	EOS_EResult InitResult = EOS_Initialize( &SDKOptions );
+
+	if( InitResult != EOS_EResult::EOS_Success )
+	{
+		UE_LOG_ONLINE( Warning, TEXT( "EOS SDK Initialization failed!" ) );
+		return false;
+	}
+
+	UE_LOG_ONLINE( Warning, TEXT( "EOS SDK Initialization Success!" ) );
+	return true;
+}
+
+bool FOnlineSubsystemEOS::CreatePlatformHandle()
+{
+	// Create platform instance
+	EOS_Platform_Options PlatformOptions;
+	PlatformOptions.ApiVersion = EOS_PLATFORM_OPTIONS_API_LATEST;
+	PlatformOptions.bIsServer = EOS_FALSE;
+	PlatformOptions.EncryptionKey = nullptr;
+	PlatformOptions.OverrideCountryCode = nullptr;
+	PlatformOptions.OverrideLocaleCode = nullptr;
+	static std::string EncryptionKey( 64, '1' );
+	PlatformOptions.EncryptionKey = EncryptionKey.c_str();
+	PlatformOptions.Flags = 0;
+
+	FString TempPath = FPaths::ConvertRelativePathToFull( FPaths::ProjectSavedDir() + "/Temp/" );
+	if( FPlatformFileManager::Get().GetPlatformFile().DirectoryExists( *TempPath ) == false )
+	{
+		if( FPlatformFileManager::Get().GetPlatformFile().CreateDirectoryTree( *TempPath ) == false )
+		{
+			UE_LOG_ONLINE( Warning, TEXT( "EOS SDK Failed to create Cache Directory: %s." ), *TempPath );
+			return false;
+		}
+	}
+
+	PlatformOptions.CacheDirectory = TCHAR_TO_UTF8( *TempPath );
+
+	std::string ProductIdStr = TCHAR_TO_UTF8( *ProductId );
+	std::string SandboxIdStr = TCHAR_TO_UTF8( *SandboxId );
+	std::string DeploymentIdStr = TCHAR_TO_UTF8( *DeploymentId );
+
+	if( ProductIdStr.empty() )
+	{
+		UE_LOG_ONLINE( Warning, TEXT( "EOS SDK Product Id is invalid." ) );
+		return false;
+	}
+
+	if( SandboxIdStr.empty() )
+	{
+		UE_LOG_ONLINE( Warning, TEXT( "EOS SDK Sandbox Id is invalid." ) );
+		return false;
+	}
+
+	if( DeploymentIdStr.empty() )
+	{
+		UE_LOG_ONLINE( Warning, TEXT( "EOS SDK Deployment Id is invalid." ) );
+		return false;
+	}
+
+	PlatformOptions.ProductId = ProductIdStr.c_str();
+	PlatformOptions.SandboxId = SandboxIdStr.c_str();
+	PlatformOptions.DeploymentId = DeploymentIdStr.c_str();
+
+	std::string ClientIdStr = TCHAR_TO_UTF8( *ClientId );
+	std::string ClientSecretStr = TCHAR_TO_UTF8( *ClientSecret );
+
+	PlatformOptions.ClientCredentials.ClientId = ( ClientIdStr.empty() ) ? nullptr : ClientIdStr.c_str();
+	PlatformOptions.ClientCredentials.ClientSecret = ( ClientSecretStr.empty() ) ? nullptr : ClientSecretStr.c_str();
+
+	PlatformOptions.Reserved = NULL;
+
+	PlatformHandle = EOS_Platform_Create( &PlatformOptions );
+
+	if( PlatformHandle == nullptr )
+	{
+		UE_LOG_ONLINE( Warning, TEXT( "EOS SDK Failed to create platform." ) );
+		return false;
+	}
+
+	return true;
+}

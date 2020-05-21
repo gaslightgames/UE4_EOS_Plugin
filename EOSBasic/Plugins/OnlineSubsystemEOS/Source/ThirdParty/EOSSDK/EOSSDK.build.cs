@@ -12,7 +12,7 @@ public class EOSSDK : ModuleRules
 #endif
     {
         // The currently supported version of the EOS SDK.
-        // EOSVersion = "1.4.1";
+        // EOSVersion = "1.6";
 
         Type = ModuleType.External;
 
@@ -22,6 +22,12 @@ public class EOSSDK : ModuleRules
         }
 
         string BaseDirectory = Path.GetFullPath( Path.Combine( ModuleDirectory, "..", "..", "ThirdParty", "EOSSDK" ) );
+
+        // Check if the EOS SDK exists.
+        if( Directory.Exists( BaseDirectory ) )
+        {
+            PublicDefinitions.Add( "EOS_SDK_INSTALLED" );
+        }
 
         if( Target.Platform == UnrealTargetPlatform.Win64 )
         {

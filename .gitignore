@@ -104,3 +104,4 @@ EOSBasic/Plugins/*/Intermediate/*
 EOSBasic/DerivedDataCache/*
 Tools
 /EOSBasic/Config/DefaultGame_Local.ini
+/EOSBasic/Plugins/OnlineSubsystemEOS/Source/ThirdParty/EOSSDK/Include

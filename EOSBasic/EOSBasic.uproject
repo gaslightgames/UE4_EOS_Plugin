@@ -12,7 +12,7 @@
 	],
 	"Plugins": [
 		{
-			"Name": "UEOS",
+			"Name": "OnlineSubsystemEOS",
 			"Enabled": true
 		},
 		{
