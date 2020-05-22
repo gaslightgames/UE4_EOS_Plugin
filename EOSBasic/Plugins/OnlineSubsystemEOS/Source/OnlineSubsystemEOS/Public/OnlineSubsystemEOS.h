@@ -9,6 +9,12 @@
 // EOS Includes
 #include "eos_sdk.h"
 
+// Forward Declarations
+class FOnlineIdentityEOS;
+
+/** Forward declarations of all interface classes */
+typedef TSharedPtr<FOnlineIdentityEOS, ESPMode::ThreadSafe> FOnlineIdentityEOSPtr;
+
 
 // Subsystem Name
 #ifndef EOS_SUBSYSTEM
@@ -66,6 +72,8 @@ public:
 
 protected:
 
+	bool								IsEOSInitialized() { return bEOSInitialized; };
+
 	// Attempt to gather the Config Options for the EOS
 	bool								GetEOSConfigOptions();
 
@@ -97,6 +105,15 @@ protected:
 	/** The ClientSecret for the running game. */
 	FString								ClientSecret;
 
+	/// ---------------------------------------------------
+	/// Subsystem Interfaces
+	/// ---------------------------------------------------
+
+	/** Interface to the profile services */
+	FOnlineIdentityEOSPtr				IdentityInterface;
+
+	/// ---------------------------------------------------
+
 PACKAGE_SCOPE :
 
 	/** Only the factory makes instances */
@@ -110,10 +127,14 @@ PACKAGE_SCOPE :
 		, DeploymentId( "" )
 		, ClientId( "" )
 		, ClientSecret( "" )
+		, IdentityInterface( nullptr )
+		, bEOSInitialized( false )
 		, PlatformHandle( nullptr )
 	{}
 
 private:
+
+	bool								bEOSInitialized;
 
 	/** The EOS Platform Handle for Platform operations. */
 	EOS_HPlatform						PlatformHandle;

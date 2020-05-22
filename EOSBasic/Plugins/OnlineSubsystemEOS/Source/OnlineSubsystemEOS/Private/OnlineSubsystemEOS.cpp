@@ -2,6 +2,8 @@
 
 #include "OnlineSubsystemEOS.h"
 
+#include "OnlineIdentityInterfaceEOS.h"
+
 IOnlineSessionPtr FOnlineSubsystemEOS::GetSessionInterface() const
 {
 	return nullptr;
@@ -54,7 +56,7 @@ IOnlineTimePtr FOnlineSubsystemEOS::GetTimeInterface() const
 
 IOnlineIdentityPtr FOnlineSubsystemEOS::GetIdentityInterface() const
 {
-	return nullptr;
+	return IdentityInterface;
 }
 
 IOnlineTitleFilePtr FOnlineSubsystemEOS::GetTitleFileInterface() const
@@ -134,18 +136,21 @@ bool FOnlineSubsystemEOS::IsLocalPlayer( const FUniqueNetId& UniqueId ) const
 
 bool FOnlineSubsystemEOS::Init()
 {
-	// Attempt to initialize the SDK!
-	if( GetEOSConfigOptions() == false )
+	if( IsEOSInitialized() == false )
 	{
-		UE_LOG_ONLINE( Warning, TEXT( "Could not gather EOS Config Options! Falling back to another OSS." ) );
-		return false;
-	}
+		// Attempt to initialize the SDK!
+		if( GetEOSConfigOptions() == false )
+		{
+			UE_LOG_ONLINE( Warning, TEXT( "Could not gather EOS Config Options! Falling back to another OSS." ) );
+			return false;
+		}
 
-	// Have config values, attempt to initialize the EOS SDK
-	if( InitializeSDK() == false )
-	{
-		UE_LOG_ONLINE( Warning, TEXT( "Could not initialize EOS SDK! Falling back to another OSS." ) );
-		return false;
+		// Have config values, attempt to initialize the EOS SDK
+		if( InitializeSDK() == false )
+		{
+			UE_LOG_ONLINE( Warning, TEXT( "Could not initialize EOS SDK! Falling back to another OSS." ) );
+			return false;
+		}
 	}
 
 	// Initialized the SDK, attempt to get a Platform Handle
@@ -155,6 +160,9 @@ bool FOnlineSubsystemEOS::Init()
 		return false;
 	}
 
+	// Instantiate Online Subsystem interfaces
+	IdentityInterface = MakeShareable( new FOnlineIdentityEOS( this ) );
+
 	return true;
 }
 
@@ -162,9 +170,31 @@ bool FOnlineSubsystemEOS::Shutdown()
 {
 	FOnlineSubsystemImpl::Shutdown();
 
-	// Attempt to end any Aysync Processes.
+	// Attempt to end any Async Processes.
 
-	// Attempt to Shutdown the SDK.
+#define DESTRUCT_INTERFACE(Interface) \
+	if( Interface.IsValid() ) \
+	{ \
+		ensure( Interface.IsUnique() ); \
+		Interface = nullptr; \
+	}
+
+	// Destroy Online Subsystem interfaces
+	DESTRUCT_INTERFACE( IdentityInterface );
+
+	if( IsEOSInitialized() == true )
+	{
+		// Attempt to Shutdown the SDK.
+		EOS_EResult ShutdownResult = EOS_Shutdown();
+
+		if( ShutdownResult != EOS_EResult::EOS_Success )
+		{
+			UE_LOG_ONLINE( Warning, TEXT( "EOS SDK Shutdown failed!" ) );
+			return false;
+		}
+
+		bEOSInitialized = false;
+	}
 
 	return true;
 }
@@ -196,8 +226,17 @@ FText FOnlineSubsystemEOS::GetOnlineServiceName() const
 
 bool FOnlineSubsystemEOS::Tick( float DeltaTime )
 {
-	// If valid:
-	// - Update/Tick the EOS SDK
+	if( IsEOSInitialized() == true )
+	{
+		if( PlatformHandle == nullptr )
+		{
+			UE_LOG_ONLINE( Warning, TEXT( "Can Tick EOS, PlatformHandle is invalid." ) );
+			bEOSInitialized = false;
+			return false;
+		}
+
+		EOS_Platform_Tick( PlatformHandle );
+	}
 
 	return true;
 }
@@ -246,6 +285,8 @@ bool FOnlineSubsystemEOS::GetEOSConfigOptions()
 		return false;
 	}
 
+	UE_LOG_ONLINE( Warning, TEXT( "EOS Config: Success." ) );
+
 	return true;
 }
 
@@ -269,11 +310,12 @@ bool FOnlineSubsystemEOS::InitializeSDK()
 
 	if( InitResult != EOS_EResult::EOS_Success )
 	{
-		UE_LOG_ONLINE( Warning, TEXT( "EOS SDK Initialization failed!" ) );
+		UE_LOG_ONLINE( Warning, TEXT( "EOS SDK Initialization: FAILED!" ) );
 		return false;
 	}
 
-	UE_LOG_ONLINE( Warning, TEXT( "EOS SDK Initialization Success!" ) );
+	bEOSInitialized = true;
+	UE_LOG_ONLINE( Warning, TEXT( "EOS SDK Initialization: Success!" ) );
 	return true;
 }
 
@@ -343,6 +385,8 @@ bool FOnlineSubsystemEOS::CreatePlatformHandle()
 		UE_LOG_ONLINE( Warning, TEXT( "EOS SDK Failed to create platform." ) );
 		return false;
 	}
+
+	UE_LOG_ONLINE( Warning, TEXT( "EOS SDK Platform: Success." ) );
 
 	return true;
 }
