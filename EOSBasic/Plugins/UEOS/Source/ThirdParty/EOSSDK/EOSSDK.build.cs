@@ -63,8 +63,8 @@ public class EOSSDK : ModuleRules
             PublicIncludePaths.Add( Path.Combine( BaseDirectory, "Include" ) );
 
             // Add the import library
-            PublicAdditionalLibraries.Add( Path.Combine( BaseDirectory, "Bin", "EOSSDK-Mac-Shipping.dylib" ) );
-            RuntimeDependencies.Add( Path.Combine( BaseDirectory, "Bin", "EOSSDK-Mac-Shipping.dylib" ) );
+            PublicAdditionalLibraries.Add( Path.Combine( BaseDirectory, "Bin", "libEOSSDK-Mac-Shipping.dylib" ) );
+            RuntimeDependencies.Add( Path.Combine( BaseDirectory, "Bin", "libEOSSDK-Mac-Shipping.dylib" ) );
         }
     }
 }

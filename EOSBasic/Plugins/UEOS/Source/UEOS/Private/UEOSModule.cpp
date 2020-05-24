@@ -36,7 +36,7 @@ void FUEOSModule::StartupModule()
 #endif
 	const FString LibDir = FPaths::Combine( *SDKDir, TEXT( "Bin" ) );
 #elif PLATFORM_MAC
-	const FString LibName = TEXT( "EOSSDK-Mac-Shipping" );
+	const FString LibName = TEXT( "libEOSSDK-Mac-Shipping" );
 	const FString LibDir = FPaths::Combine( *SDKDir, TEXT( "Bin" ) );
 #endif // WINDOWS/MAC
 
