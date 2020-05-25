@@ -5,34 +5,18 @@ This plugin does not include the EOS (Epic Online Services) SDK.  You will have 
 
 The project currently supports SDK **v1.6** and Engine version **4.25.0**.
 
-Make sure to right click the .uproject, Generate Visual Studio files and compile.
+Make sure to right click the .uproject, Generate Visual Studio files and **compile**.
 
 If you download and run the sample project, you will need to:
 - Have registered your project on the EOS site (Dev Portal)
-- Retrieved your ProductId, SandboxId and DepolymentId
-- Add the ProductId, SandboxId and DeploymentId's to the Settings in Project Settings -> UEOS
+- Retrieved your ProductId, SandboxId, DepolymentId, ClientId and Client Secret
+- Add the ProductId, SandboxId, DeploymentId, ClientId and Client Secret to **DefaultEngine.ini** (see the appropriate area)
 
-In the sample, within the Player Controller, there are several input events connected to simple actions.
-- E will attempt to initialise the EOS SDK, passing your parameters.
-- S will attempt to shutdown the EOS SDK.
+The project will now auto-initialize (and Shutdown) the SDK on Module startup.
 
-(Obviously you will want/need to move this to something more appropriate for your project.)
+The current version only has support for logging **IN** to an account. You will require a **ClientId** and **Client Secret**. AND right now only using the **Dev Tool** (https://dev.epicgames.com/docs/services/en-US/DeveloperAuthenticationTool/index.html) has been tested and logging in (see Log output where "Status: 2" is given).
 
-Once you have the SDK initialized, then you can use:
-- B will initialize a Metric.
-- N will attempt to Begin a Player Session.
-- M will attempt to End a Player Session.
-
-The options for Account Login/Logout will **ONLY** work if you configure your Project with Epic Account Services, through the Dashboard. Once you have done that, create a Client, get the ClientID and Client Secret, add these to the Project Settings and you're good to go. The same goes for running the Developer Authentication Tool.
-Once you have initialized the SDK, you can also use:
-- I will attempt to Login
-- O will attempt to Logout (will only work if a successful Login occurred first)
-
-The first/initial implementation for support of UserInfo queries is now in. You must have your project configured through EAS (in the Dashboard). You need to initialize the SDK and Login, so a valid AccountId can be retrieved.
-Once you have initialized and logged in, you can also use:
-- R will attempt to request UserInfo and then populate the DisplayName in the Widget
-
-The project, blueprint nodes and comments have more direct usage information.
+The project has now moved over to using an Online Subsystem, so in your own project, you will need to add the appropriate sections and details to your own DefaultEngine.ini. See the sample project, EOSBasic, for more implementation details.
 
 License:
 Provided "as is."  So feel free to use it in any and all of your own projects.  Use it as a "jumping off point" to extend, fix and included into anything else you want.
