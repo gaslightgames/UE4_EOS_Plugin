@@ -70,9 +70,22 @@ public:
 	// FTickerObjectBase
 	virtual bool						Tick( float DeltaTime ) override;
 
-protected:
-
+	/**
+	* Checks whether the EOS SDK has been Initialized.
+	*
+	* @return bool True if has been initialized, otherwise false.
+	*/
 	bool								IsEOSInitialized() { return bEOSInitialized; };
+
+	/**
+	* Returns the current Platform Handle.
+	* Can be NULL if the SDK has not been initialized or failed to initialize.
+	*
+	* @return EOS_HPlatform The current EOS Platform Handle.
+	*/
+	EOS_HPlatform						GetPlatformHandle() { return PlatformHandle; };
+
+protected:
 
 	// Attempt to gather the Config Options for the EOS
 	bool								GetEOSConfigOptions();
