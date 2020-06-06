@@ -1,9 +1,14 @@
 // Copyright (C) Gaslight Games Ltd, 2019-2020
 
 #include "OnlineSubsystemEOS.h"
-#include "Core.h"
 
+// UE4 Includes
+#include "Core.h"
+#include "UObject/ObjectMacros.h"
+
+// OSS EOS Includes
 #include "OnlineIdentityInterfaceEOS.h"
+
 
 IOnlineSessionPtr FOnlineSubsystemEOS::GetSessionInterface() const
 {

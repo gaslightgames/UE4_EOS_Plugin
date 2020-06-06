@@ -2,6 +2,7 @@
 
 #include "OnlineSubsystemEOSCommon.h"
 
+
 EEOSResultType UEOSCommon::GetUnrealFriendlyResult( EOS_EResult SDKResult, EEOSResults& Result, EEOSAuth& Auth, EEOSFriends& Friends, EEOSPresence& Presence, EEOSEcom& Ecom )
 {
 	Result = EEOSResults::ER_UnknownError;

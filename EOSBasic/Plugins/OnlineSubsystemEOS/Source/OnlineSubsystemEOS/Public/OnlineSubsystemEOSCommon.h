@@ -1,8 +1,6 @@
 // Copyright (C) Gaslight Games Ltd, 2019-2020
 
 #pragma once
-#include "CoreMinimal.h"
-#include "UObject/ObjectMacros.h"
 
 // EOS Includes
 #include "eos_sdk.h"
