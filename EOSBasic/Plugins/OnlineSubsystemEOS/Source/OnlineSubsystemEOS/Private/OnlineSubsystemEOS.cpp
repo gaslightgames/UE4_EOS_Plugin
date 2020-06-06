@@ -70,6 +70,11 @@ IOnlineEntitlementsPtr FOnlineSubsystemEOS::GetEntitlementsInterface() const
 	return nullptr;
 }
 
+IOnlineStorePtr FOnlineSubsystemEOS::GetStoreInterface() const
+{
+	return nullptr;
+}
+
 IOnlineStoreV2Ptr FOnlineSubsystemEOS::GetStoreV2Interface() const
 {
 	return nullptr; 
