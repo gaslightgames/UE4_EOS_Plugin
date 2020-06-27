@@ -11,9 +11,11 @@
 
 // Forward Declarations
 class FOnlineIdentityEOS;
+class FOnlineSessionEOS;
 
 /** Forward declarations of all interface classes */
 typedef TSharedPtr<FOnlineIdentityEOS, ESPMode::ThreadSafe> FOnlineIdentityEOSPtr;
+typedef TSharedPtr<FOnlineSessionEOS, ESPMode::ThreadSafe> FOnlineSessionEOSPtr;
 
 
 // Subsystem Name
@@ -125,6 +127,9 @@ protected:
 
 	/** Interface to the profile services */
 	FOnlineIdentityEOSPtr				IdentityInterface;
+
+	/** Interface to the Session services */
+	FOnlineSessionEOSPtr				SessionInterface;
 
 	/// ---------------------------------------------------
 

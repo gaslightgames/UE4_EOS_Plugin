@@ -8,11 +8,12 @@
 
 // OSS EOS Includes
 #include "OnlineIdentityInterfaceEOS.h"
+#include "OnlineSessionInterfaceEOS.h"
 
 
 IOnlineSessionPtr FOnlineSubsystemEOS::GetSessionInterface() const
 {
-	return nullptr;
+	return SessionInterface;
 }
 
 IOnlineFriendsPtr FOnlineSubsystemEOS::GetFriendsInterface() const
@@ -173,6 +174,7 @@ bool FOnlineSubsystemEOS::Init()
 
 	// Instantiate Online Subsystem interfaces
 	IdentityInterface = MakeShareable( new FOnlineIdentityEOS( this ) );
+	SessionInterface = MakeShareable( new FOnlineSessionEOS( this ) );
 
 	return true;
 }
@@ -192,6 +194,7 @@ bool FOnlineSubsystemEOS::Shutdown()
 
 	// Destroy Online Subsystem interfaces
 	DESTRUCT_INTERFACE( IdentityInterface );
+	DESTRUCT_INTERFACE( SessionInterface );
 
 	if( IsEOSInitialized() == true )
 	{
