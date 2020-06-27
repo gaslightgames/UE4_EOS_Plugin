@@ -3,7 +3,8 @@ A plugin and sample project, built for Unreal Engine 4, that implements the Epic
 
 This plugin does not include the EOS (Epic Online Services) SDK.  You will have to register and download this separately.  Then copy the Bin, Include and Lib folders to the Plugins/Source/ThirdParty/EOSSDK directory.
 
-The project currently supports SDK **v1.6** and Engine version **4.25.0**.
+The project currently supports SDK **v1.6.2** and Engine version **4.25.1**.
+Additional support for Engine version 4.24 is now available.
 
 Make sure to right click the .uproject, Generate Visual Studio files and **compile**.
 
