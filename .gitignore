@@ -106,3 +106,4 @@ Tools
 /EOSBasic/Config/DefaultGame_Local.ini
 /EOSBasic/Plugins/OnlineSubsystemEOS/Source/ThirdParty/EOSSDK/Include
 /EOSBasic/Config/DefaultEngine - Local.ini
+/EOSBasic/Config/DefaultEngine_Live.ini

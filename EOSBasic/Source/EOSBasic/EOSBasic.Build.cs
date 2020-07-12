@@ -4,7 +4,7 @@ using UnrealBuildTool;
 
 public class EOSBasic : ModuleRules
 {
-	public EOSBasic(ReadOnlyTargetRules Target) : base(Target)
+	public EOSBasic( ReadOnlyTargetRules Target ) : base( Target )
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	

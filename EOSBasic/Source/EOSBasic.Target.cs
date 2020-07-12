@@ -5,7 +5,7 @@ using System.Collections.Generic;
 
 public class EOSBasicTarget : TargetRules
 {
-	public EOSBasicTarget(TargetInfo Target) : base(Target)
+	public EOSBasicTarget( TargetInfo Target ) : base( Target )
 	{
         DefaultBuildSettings = BuildSettingsVersion.V2;
 
