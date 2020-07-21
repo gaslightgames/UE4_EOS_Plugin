@@ -347,6 +347,11 @@ bool FOnlineSubsystemEOS::CreatePlatformHandle()
 	PlatformOptions.EncryptionKey = EncryptionKey;
 	PlatformOptions.Flags = 0;
 
+	// Disable the Overlay if we are in the UE4 Editor.
+#if WITH_EDITOR
+	PlatformOptions.Flags |= EOS_PF_LOADING_IN_EDITOR;
+#endif
+
 	FString TempPath = FPaths::ConvertRelativePathToFull( FPaths::ProjectSavedDir() + "/Temp/" );
 	if( FPlatformFileManager::Get().GetPlatformFile().DirectoryExists( *TempPath ) == false )
 	{
