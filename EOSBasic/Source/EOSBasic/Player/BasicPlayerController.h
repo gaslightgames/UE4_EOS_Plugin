@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/PlayerController.h"
+#include "OnlineSubsystemEOSCommon.h"
 #include "BasicPlayerController.generated.h"
 
 /**

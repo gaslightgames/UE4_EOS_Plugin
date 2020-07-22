@@ -85,6 +85,12 @@ enum class EEOSEcom : uint8
 	EE_UnknownError					UMETA( DisplayName = "Unknown Error" )
 };
 
+UENUM(BlueprintType)
+enum class EEOSLoginType : uint8
+{
+	LT_DeveloperTool				UMETA( DisplayName = "Developer Tool" ),
+	LT_EpicPortal					UMETA( DisplayName = "Epic Portal" )
+};
 
 class UEOSCommon
 {
@@ -131,4 +137,8 @@ public:
 	* @return FString result of the conversion.
 	*/
 	static FString					EOSResultToString( EOS_EResult Result );
+
+	static FString					EEOSLoginTypeToString( EEOSLoginType LoginType );
+
+	static EEOSLoginType			EEOSLoginTypeFromString( FString EEOSLoginType );
 };
