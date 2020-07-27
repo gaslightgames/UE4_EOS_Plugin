@@ -41,9 +41,19 @@ bool FOnlineIdentityEOS::Login( int32 LocalUserNum, const FOnlineAccountCredenti
 				FString MessageText = FString::Printf( TEXT( "Logging In with Dev Auth Tool | ID: %s | Token: %s." ), *AccountCredentials.Id, *AccountCredentials.Token );
 				UE_LOG_ONLINE_IDENTITY( Warning, TEXT( "%s" ), *MessageText );
 
-				Credentials.Id = TCHAR_TO_UTF8( *AccountCredentials.Id );
-				Credentials.Token = TCHAR_TO_UTF8( *AccountCredentials.Token );
-				Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_Developer;
+				EEOSLoginType LoginType = UEOSCommon::EEOSLoginTypeFromString(AccountCredentials.Type);
+
+				switch (LoginType) {
+					case EEOSLoginType::LT_DeveloperTool:
+						Credentials.Id = TCHAR_TO_UTF8(*AccountCredentials.Id);
+						Credentials.Token = TCHAR_TO_UTF8(*AccountCredentials.Token);
+						Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_Developer;
+						break;
+					case EEOSLoginType::LT_EpicPortal:
+						Credentials.Type = EOS_ELoginCredentialType::EOS_LCT_AccountPortal;
+						break;
+				}
+
 
 				LoginOptions.Credentials = &Credentials;
 

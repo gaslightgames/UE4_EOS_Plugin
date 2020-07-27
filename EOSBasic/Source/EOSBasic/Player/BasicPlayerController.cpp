@@ -10,6 +10,8 @@
 
 // EOS Plugin Includes
 #include "OnlineSubsystemEOS.h"
+//TODO: why can't this be a .h? Isn't the static method defined there?
+#include "OnlineSubsystemEOSCommon.cpp"
 
 
 bool ABasicPlayerController::RequestLogin( FString Id, FString Token, FString Type )

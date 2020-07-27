@@ -489,3 +489,31 @@ FString UEOSCommon::EOSResultToString( EOS_EResult Result )
 
 	return "Unknown";
 }
+
+FString UEOSCommon::EEOSLoginTypeToString(EEOSLoginType LoginType) {
+
+	switch (LoginType)
+	{
+
+	case EEOSLoginType::LT_DeveloperTool:
+		return "Dev";
+	case EEOSLoginType::LT_EpicPortal:
+		return "EpicPortal";
+	}
+
+	return "Unknown";
+}
+
+EEOSLoginType UEOSCommon::EEOSLoginTypeFromString(FString EEOSLoginType) {
+	if( EEOSLoginType.Equals("Dev") )
+	{
+		return EEOSLoginType::LT_DeveloperTool;
+	}
+	else if( EEOSLoginType.Equals("EpicPortal") )
+	{
+		return EEOSLoginType::LT_EpicPortal;
+	}
+
+	//TODO: What do I do for a default?
+	return EEOSLoginType::LT_DeveloperTool;
+}
