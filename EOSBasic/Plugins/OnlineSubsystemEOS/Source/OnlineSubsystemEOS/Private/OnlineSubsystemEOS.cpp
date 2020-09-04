@@ -362,7 +362,8 @@ bool FOnlineSubsystemEOS::CreatePlatformHandle()
 		}
 	}
 
-	PlatformOptions.CacheDirectory = TCHAR_TO_UTF8( *TempPath );
+	std::string CacheDirUTF8( TCHAR_TO_UTF8( *TempPath ) );
+	PlatformOptions.CacheDirectory = CacheDirUTF8.c_str();
 
 	FTCHARToUTF8 ProductIdStr( *ProductId );
 	FTCHARToUTF8 SandboxIdStr( *SandboxId );
