@@ -12,7 +12,7 @@ public class EOSSDK : ModuleRules
 #endif
     {
         // The currently supported version of the EOS SDK.
-        // EOSVersion = "1.6";
+        // EOSVersion = "1.9";
 
         Type = ModuleType.External;
 
@@ -29,11 +29,11 @@ public class EOSSDK : ModuleRules
             PublicDefinitions.Add( "EOS_SDK_INSTALLED" );
         }
 
-        if( Target.Platform == UnrealTargetPlatform.Win64 )
-        {
-            // Include headers
-            PublicIncludePaths.Add( Path.Combine( BaseDirectory, "Include" ) );
+        // Include headers
+        PublicIncludePaths.Add( Path.Combine( BaseDirectory, "Include" ) );
 
+        if ( Target.Platform == UnrealTargetPlatform.Win64 )
+        {
             // Add the import library
             PublicAdditionalLibraries.Add( Path.Combine( BaseDirectory, "Lib", "EOSSDK-Win64-Shipping.lib" ) );
 
@@ -44,9 +44,6 @@ public class EOSSDK : ModuleRules
         
         if( Target.Platform == UnrealTargetPlatform.Win32 )
         {
-            // Include headers
-            PublicIncludePaths.Add( Path.Combine( BaseDirectory, "Include" ) );
-
             // Add the import library
             PublicAdditionalLibraries.Add( Path.Combine( BaseDirectory, "Lib", "EOSSDK-Win32-Shipping.lib" ) );
 
@@ -56,18 +53,12 @@ public class EOSSDK : ModuleRules
         }
         else if( Target.Platform == UnrealTargetPlatform.Linux )
         {
-            // Include headers
-            PublicIncludePaths.Add( Path.Combine( BaseDirectory, "Include" ) );
-
             // Add the import library
             PublicAdditionalLibraries.Add( Path.Combine( BaseDirectory, "Bin", "libEOSSDK-Linux-Shipping.so" ) );
             RuntimeDependencies.Add( Path.Combine( BaseDirectory, "Bin", "libEOSSDK-Linux-Shipping.so" ) );
         }
         else if( Target.Platform == UnrealTargetPlatform.Mac )
         {
-            // Include headers
-            PublicIncludePaths.Add( Path.Combine( BaseDirectory, "Include" ) );
-
             // Add the import library
             PublicAdditionalLibraries.Add( Path.Combine( BaseDirectory, "Bin", "libEOSSDK-Mac-Shipping.dylib" ) );
             RuntimeDependencies.Add( Path.Combine( BaseDirectory, "Bin", "libEOSSDK-Mac-Shipping.dylib" ) );

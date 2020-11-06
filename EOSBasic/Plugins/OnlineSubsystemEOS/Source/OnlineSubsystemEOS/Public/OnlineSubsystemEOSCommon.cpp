@@ -439,8 +439,6 @@ FString UEOSCommon::EOSResultToString( EOS_EResult Result )
 		return "EOS_Connect_ExternalServiceUnavailable";
 	case EOS_EResult::EOS_Connect_ExternalServiceConfigurationFailure:
 		return "EOS_Connect_ExternalServiceConfigurationFailure";
-	case EOS_EResult::EOS_Connect_LinkAccountFailedMissingNintendoIdAccount:
-		return "EOS_Connect_LinkAccountFailedMissingNintendoIdAccount";
 
 	case EOS_EResult::EOS_UI_SocialOverlayLoadError:
 		return "EOS_UI_SocialOverlayLoadError";
