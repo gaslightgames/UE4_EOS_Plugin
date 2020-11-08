@@ -319,6 +319,7 @@ bool FOnlineSubsystemEOS::InitializeSDK()
 	SDKOptions.ProductVersion = ProductVersionStr.Get();
 	SDKOptions.Reserved = nullptr;
 	SDKOptions.SystemInitializeOptions = nullptr;
+	SDKOptions.OverrideThreadAffinity = nullptr;
 
 	EOS_EResult InitResult = EOS_Initialize( &SDKOptions );
 
