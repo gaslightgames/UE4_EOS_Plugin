@@ -1,4 +1,10 @@
 # UE4_EOS_Plugin
+
+**THIS PROJECT HAS BEEN ARCHIVED.**
+**Search for any of the more complete projects, available from other sources including the Epic Marketplace.**
+
+The time required to update and complete this project, vs those that have made leaps ahead marks the end of this product.
+
 A plugin and sample project, built for Unreal Engine 4, that implements the Epic Online Services SDK
 
 This plugin does not include the EOS (Epic Online Services) SDK.  You will have to register and download this separately.  Then copy the Bin, Include and Lib folders to the Plugins/Source/ThirdParty/EOSSDK directory.
